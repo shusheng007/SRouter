@@ -1,7 +1,10 @@
 package top.ss007.demolib2.services;
 
 
-//import top.ss007.router.generated.service.ServiceInit_Lib2ServiceImp;
+
+import top.ss007.annotation.internal.SuffixConst;
+import top.ss007.businessbase.services.Lib2Service;
+import top.ss007.router.SRouter;
 
 /**
  * Copyright (C) 2019 shusheng007
@@ -16,13 +19,12 @@ package top.ss007.demolib2.services;
 public class Lib2Controller {
     public static void init(){
         try {
-            // 编译的时候生成的代码还不存在，所以需要使用反射
-            Class.forName("top.ss007.router.generated.service.ServiceInit_Lib2ServiceImp")
-                    .getMethod("init")
+            //编译的时候生成的代码还不存在，所以需要使用反射
+            Class.forName(SuffixConst.GEN_PKG_SERVICE+".ServiceInit_Lib2ServiceImp")
+                    .getMethod(SuffixConst.INIT_METHOD)
                     .invoke(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //ServiceInit_Lib2ServiceImp.init();
     }
 }

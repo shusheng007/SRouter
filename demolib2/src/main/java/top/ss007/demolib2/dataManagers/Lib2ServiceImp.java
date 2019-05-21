@@ -17,8 +17,16 @@ import top.ss007.businessbase.services.ServiceKeys;
  */
 @RouterService(interfaces = Lib2Service.class,key = ServiceKeys.KEY_LIB2_SERVICE)
 public class Lib2ServiceImp implements Lib2Service {
+
+    private final String address;
+
+    public Lib2ServiceImp(String address) {
+        this.address = address;
+    }
+
     @Override
     public String getLib2Name() {
         return "I come from lib2 ";
     }
+
 }

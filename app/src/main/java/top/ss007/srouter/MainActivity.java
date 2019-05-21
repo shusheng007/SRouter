@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import top.ss007.demolib1.Lib1Activity;
+import top.ss007.router.SRouter;
+import top.ss007.router.core.UriRequest;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -12,7 +14,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.btn_show_lib1).setOnClickListener(v->{
-            startActivity(new Intent(this, Lib1Activity.class));
+            SRouter.startUri(this,"srouter://host/lib1");
+            //startActivity(new Intent(this, Lib1Activity.class));
         });
     }
 }

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
+import top.ss007.router.core.Debugger;
+import top.ss007.router.services.DefaultFactory;
 import top.ss007.router.services.IFactory;
 
 /**
@@ -22,15 +24,10 @@ public class SingletonPool {
             return null;
         }
         if (factory == null) {
-            factory = new IFactory() {
-                @Override
-                public <T> T create(Class<T> clazz) throws Exception {
-                    return clazz.newInstance();
-                }
-            };
+            factory = DefaultFactory.INSTANCE;
         }
         Object instance = getInstance(clazz, factory);
-        //Debugger.i("[SingletonPool]   get instance of class = %s, result = %s", clazz, instance);
+        Debugger.i("[SingletonPool]   get instance of class = %s, result = %s", clazz, instance);
         return (T) instance;
     }
 
@@ -43,7 +40,7 @@ public class SingletonPool {
             synchronized (CACHE) {
                 t = CACHE.get(clazz);
                 if (t == null) {
-                    //Debugger.i("[SingletonPool] >>> create instance: %s", clazz);
+                    Debugger.i("[SingletonPool] >>> create instance: %s", clazz);
                     t = factory.create(clazz);
                     //noinspection ConstantConditions
                     if (t != null) {

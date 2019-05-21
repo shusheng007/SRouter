@@ -223,12 +223,13 @@ public abstract class BaseProcessor extends AbstractProcessor {
                 .build();
     }
 
+
     /**
      * 辅助工具类，用于生成ServiceInitClass，格式如下：
      * <pre>
-     * package com.sankuai.waimai.router.generated.service;
+     * package top.ss007.router.generated.service;
      *
-     * import com.sankuai.waimai.router.service.ServiceLoader;
+     * import top.ss007.router.generated.service.ServiceLoader;
      *
      * public class &lt;ClassName&gt; {
      *     public static void init() {

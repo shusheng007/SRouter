@@ -43,10 +43,10 @@ public class SuffixConst {
             PKG + "fragment.FragmentTransactionHandler";
 
     // Library中的类名
-    public static final String PAGE_ANNOTATION_HANDLER_CLASS =
-            PKG + "common.PageAnnotationHandler";
-    public static final String PAGE_ANNOTATION_INIT_CLASS =
-            PKG + "common.IPageAnnotationInit";
+    public static final String URI_ANNOTATION_HANDLER_CLASS =
+            PKG + "uriHandlers.UriAnnotationHandler";
+    public static final String URI_ANNOTATION_INIT_CLASS =
+            PKG + "core.common.IUriAnnotationInit";
 
 
     // Android中的类名

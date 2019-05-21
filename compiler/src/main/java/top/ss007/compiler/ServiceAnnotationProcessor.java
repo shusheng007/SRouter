@@ -112,6 +112,7 @@ public class ServiceAnnotationProcessor extends BaseProcessor {
         generator.build();
     }
 
+    //这个是不是有点扯
     private static List<? extends TypeMirror> getInterface(RouterService service) {
         try {
             service.interfaces();
@@ -140,6 +141,7 @@ public class ServiceAnnotationProcessor extends BaseProcessor {
             return mMap;
         }
 
+        //将接口的实现放入holder中
         public void put(String key, String implementationName, boolean singleton) {
             if (implementationName == null) {
                 return;

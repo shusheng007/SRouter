@@ -1,9 +1,15 @@
 package top.ss007.router;
 
 import android.content.Context;
+import android.os.Looper;
 
 import java.util.List;
 
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import top.ss007.router.core.Debugger;
+import top.ss007.router.core.RootUriHandler;
+import top.ss007.router.core.UriRequest;
 import top.ss007.router.services.IFactory;
 import top.ss007.router.services.ServiceLoader;
 
@@ -20,7 +26,22 @@ import top.ss007.router.services.ServiceLoader;
  */
 public class SRouter {
 
+    private static RootUriHandler ROOT_HANDLER;
 
+    /**
+     * 此初始化方法必须在主线程调用。
+     */
+    @MainThread
+    public static void init(@NonNull RootUriHandler rootUriHandler) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            Debugger.fatal("初始化方法init应该在主线程调用");
+        }
+        if (ROOT_HANDLER == null) {
+            ROOT_HANDLER = rootUriHandler;
+        } else {
+            Debugger.fatal("请勿重复初始化UriRouter");
+        }
+    }
     /**
      * 此初始化方法的调用不是必须的。
      * 使用时会按需初始化；但也可以提前调用并初始化，使用时会等待初始化完成。
@@ -28,8 +49,34 @@ public class SRouter {
      */
     public static void lazyInit() {
         ServiceLoader.lazyInit();
-        //getRootHandler().lazyInit();
     }
+
+    public static RootUriHandler getRootHandler() {
+        if (ROOT_HANDLER == null) {
+            throw new RuntimeException("请先调用init初始化UriRouter");
+        }
+        return ROOT_HANDLER;
+    }
+
+    public static void startUri(UriRequest request) {
+        getRootHandler().startUri(request);
+    }
+
+    public static void startUri(Context context, String uri) {
+        getRootHandler().startUri(new UriRequest(context, uri));
+    }
+
+
+    /**
+     * 创建所有实现类的实例，使用 {@link RouterProvider} 方法或无参数构造。对于声明了singleton的实现类，不会重复创建实例。
+     *
+     * @return 可能返回EmptyList，List中的元素不为空
+     */
+    public static <I, T extends I> List<T> getAllServices(Class<I> clazz) {
+        return ServiceLoader.load(clazz).getAll();
+    }
+
+
     /**
      * 根据接口获取 {@link ServiceLoader}
      */
@@ -65,32 +112,6 @@ public class SRouter {
         return ServiceLoader.load(clazz).get(key, factory);
     }
 
-    /**
-     * 创建所有实现类的实例，使用 {@link //RouterProvider} 方法或无参数构造。对于声明了singleton的实现类，不会重复创建实例。
-     *
-     * @return 可能返回EmptyList，List中的元素不为空
-     */
-    public static <I, T extends I> List<T> getAllServices(Class<I> clazz) {
-        return ServiceLoader.load(clazz).getAll();
-    }
-
-    /**
-     * 创建所有实现类的实例，使用Context参数构造。对于声明了singleton的实现类，不会重复创建实例。
-     *
-     * @return 可能返回EmptyList，List中的元素不为空
-     */
-    public static <I, T extends I> List<T> getAllServices(Class<I> clazz, Context context) {
-        return ServiceLoader.load(clazz).getAll(context);
-    }
-
-    /**
-     * 创建所有实现类的实例，使用指定Factory构造。对于声明了singleton的实现类，不会重复创建实例。
-     *
-     * @return 可能返回EmptyList，List中的元素不为空
-     */
-    public static <I, T extends I> List<T> getAllServices(Class<I> clazz, IFactory factory) {
-        return ServiceLoader.load(clazz).getAll(factory);
-    }
 
     /**
      * 根据key获取实现类的Class。注意，对于声明了singleton的实现类，获取Class后还是可以创建新的实例。
