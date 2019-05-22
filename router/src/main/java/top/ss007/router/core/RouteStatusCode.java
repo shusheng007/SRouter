@@ -7,7 +7,7 @@ package top.ss007.router.core;
  * Created by jzj on 2018/3/26.
  */
 
-public class UriResult {
+public class RouteStatusCode {
 
     /**
      * 跳转成功

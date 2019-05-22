@@ -3,20 +3,12 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SRouter.iml" filepath="$PROJECT_DIR$/SRouter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SRouter.iml" filepath="$PROJECT_DIR$/SRouter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/annotation/annotation.iml" filepath="$PROJECT_DIR$/annotation/annotation.iml" />
       <module fileurl="file://$PROJECT_DIR$/annotation/annotation.iml" filepath="$PROJECT_DIR$/annotation/annotation.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/businessbase/businessbase.iml" filepath="$PROJECT_DIR$/businessbase/businessbase.iml" />
       <module fileurl="file://$PROJECT_DIR$/businessbase/businessbase.iml" filepath="$PROJECT_DIR$/businessbase/businessbase.iml" />
       <module fileurl="file://$PROJECT_DIR$/compiler/compiler.iml" filepath="$PROJECT_DIR$/compiler/compiler.iml" />
-      <module fileurl="file://$PROJECT_DIR$/compiler/compiler.iml" filepath="$PROJECT_DIR$/compiler/compiler.iml" />
-      <module fileurl="file://$PROJECT_DIR$/demolib1/demolib1.iml" filepath="$PROJECT_DIR$/demolib1/demolib1.iml" />
       <module fileurl="file://$PROJECT_DIR$/demolib1/demolib1.iml" filepath="$PROJECT_DIR$/demolib1/demolib1.iml" />
       <module fileurl="file://$PROJECT_DIR$/demolib2/demolib2.iml" filepath="$PROJECT_DIR$/demolib2/demolib2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/demolib2/demolib2.iml" filepath="$PROJECT_DIR$/demolib2/demolib2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/router/router.iml" filepath="$PROJECT_DIR$/router/router.iml" />
       <module fileurl="file://$PROJECT_DIR$/router/router.iml" filepath="$PROJECT_DIR$/router/router.iml" />
     </modules>
   </component>

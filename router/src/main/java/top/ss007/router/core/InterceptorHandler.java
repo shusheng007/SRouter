@@ -16,16 +16,19 @@ public class InterceptorHandler {
 
     private final List<UriInterceptor> mInterceptors = new LinkedList<>();
 
-    @SuppressWarnings("ConstantConditions")
     public void addInterceptor(@NonNull UriInterceptor interceptor) {
         if (interceptor != null) {
             mInterceptors.add(interceptor);
         }
     }
 
+    public void clearInterceptors(){
+        mInterceptors.clear();
+    }
+
+
     public void handleIntercept(@NonNull UriRequest request, @NonNull UriCallback callback){
         next(mInterceptors.iterator(), request, callback);
-
     }
 
     private void next(@NonNull final Iterator<UriInterceptor> iterator, @NonNull final UriRequest request,

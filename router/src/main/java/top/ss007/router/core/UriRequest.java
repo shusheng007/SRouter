@@ -11,121 +11,39 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import top.ss007.router.SRouter;
 import top.ss007.router.utils.RouterUtils;
 
 /**
  * 一次URI跳转请求，包含了Request和Response的功能。
- * 可以通过Fields存放任意扩展参数，例如设置监听 {@link #onComplete(OnCompleteListener)} ；
- * 在 {@link UriHandler} 、 {@link UriInterceptor} 间通信；存放Response {@link #getResultCode()} 等。
+ * 可以通过Fields存放任意扩展参数；
+ *
  * <p>
  * Created by jzj on 2017/4/11.
  */
 public class UriRequest {
 
-    /**
-     * 跳转请求完成的回调
-     */
-    public static final String FIELD_COMPLETE_LISTENER =
-            "top.ss007.router.core.CompleteListener";
-    /**
-     * 跳转请求的结果
-     */
-    public static final String FIELD_RESULT_CODE = "top.ss007.router.core.result";
-    /**
-     * 跳转请求失败信息
-     */
-    public static final String FIELD_ERROR_MSG = "top.ss007.router.core.error.msg";
-
-
     @NonNull
-    private final Context mContext;
+    private  Context mContext;
     @NonNull
     private Uri mUri;
+    private int requestCode;
     @NonNull
-    private final HashMap<String, Object> mFields;
+    private  Map<String, Object> mFields;
 
-    /**
-     * 是否跳过拦截器
-     */
-    private boolean isSkipInterceptors = false;
 
-    private String mSchemeHost = null;
 
-    public UriRequest(@NonNull Context context, String uri) {
-        this(context, parseUriSafely(uri), new HashMap<String, Object>());
+    private UriRequest(Builder builder){
+        this.mContext=builder.mContext;
+        this.mUri=builder.mUri;
+        this.requestCode=builder.requestCode;
+        this.mFields=builder.mData;
     }
 
-    public UriRequest(@NonNull Context context, Uri uri) {
-        this(context, uri, new HashMap<String, Object>());
-    }
 
-    public UriRequest(@NonNull Context context, String uri, HashMap<String, Object> fields) {
-        this(context, parseUriSafely(uri), fields);
-    }
-
-    public UriRequest(@NonNull Context context, Uri uri, HashMap<String, Object> fields) {
-        mContext = context;
-        mUri = uri == null ? Uri.EMPTY : uri;
-        mFields = fields == null ? new HashMap<String, Object>() : fields;
-    }
 
     @NonNull
-    public HashMap<String, Object> getFields() {
+    public Map<String, Object> getFields() {
         return mFields;
-    }
-
-    private static Uri parseUriSafely(@Nullable String uri) {
-        return TextUtils.isEmpty(uri) ? Uri.EMPTY : Uri.parse(uri);
-    }
-
-    /**
-     * 监听URI分发完成事件
-     *
-     * @see OnCompleteListener
-     */
-    public UriRequest onComplete(OnCompleteListener listener) {
-        putField(FIELD_COMPLETE_LISTENER, listener);
-        return this;
-    }
-
-    public UriRequest setResultCode(int resultCode) {
-        putField(FIELD_RESULT_CODE, resultCode);
-        return this;
-    }
-
-    public UriRequest setErrorMessage(String message) {
-        putField(FIELD_ERROR_MSG, message);
-        return this;
-    }
-
-    public OnCompleteListener getOnCompleteListener() {
-        return getField(OnCompleteListener.class, UriRequest.FIELD_COMPLETE_LISTENER);
-    }
-
-    public int getResultCode() {
-        return getIntField(FIELD_RESULT_CODE, UriResult.CODE_ERROR);
-    }
-
-    public String getErrorMessage() {
-        return getStringField(FIELD_ERROR_MSG, "");
-    }
-
-    /**
-     * 根据scheme和host生成的字符串
-     */
-    public String schemeHost() {
-        //if (mSchemeHost == null) {
-            mSchemeHost = RouterUtils.schemeHost(getUri());
-        //}
-        return mSchemeHost;
-    }
-
-    /**
-     * 判断Uri是否为空。空的Uri会在RootHandler中被处理，其他Handler不需要关心。
-     */
-    public boolean isUriEmpty() {
-        return Uri.EMPTY.equals(mUri);
     }
 
     @NonNull
@@ -138,90 +56,34 @@ public class UriRequest {
         return mUri;
     }
 
-    @SuppressWarnings("ConstantConditions")
-    public void setUri(@NonNull Uri uri) {
-        if (uri != null && !Uri.EMPTY.equals(uri)) {
-            mUri = uri;
-            mSchemeHost = null;
-        } else {
-            Debugger.fatal("UriRequest.setUri不应该传入空值");
-        }
-    }
-
-    /**
-     * 设置跳过拦截器
-     */
-    public UriRequest skipInterceptors() {
-        isSkipInterceptors = true;
-        return this;
-    }
-
-    public boolean isSkipInterceptors() {
-        return isSkipInterceptors;
-    }
-
-    /**
-     * 设置Extra参数
-     */
-    public <T> UriRequest putField(@NonNull String key, T val) {
-        if (val != null) {
-            mFields.put(key, val);
-        }
-        return this;
-    }
-
-    public synchronized <T> UriRequest putFieldIfAbsent(@NonNull String key, T val) {
-        if (val != null) {
-            if (!mFields.containsKey(key)) {
-                mFields.put(key, val);
-            }
-        }
-        return this;
-    }
-
-    public UriRequest putFields(HashMap<String, Object> fields) {
-        if (fields != null) {
-            mFields.putAll(fields);
-        }
-        return this;
-    }
-
-    public boolean hasField(@NonNull String key) {
-        return mFields.containsKey(key);
-    }
-
-    public int getIntField(@NonNull String key, int defaultValue) {
+    public int getInt(@NonNull String key, int defaultValue) {
         return getField(Integer.class, key, defaultValue);
     }
 
-    public long getLongField(@NonNull String key, long defaultValue) {
+    public long getLong(@NonNull String key, long defaultValue) {
         return getField(Long.class, key, defaultValue);
     }
 
-    public boolean getBooleanField(@NonNull String key, boolean defaultValue) {
+    public boolean getBoolean(@NonNull String key, boolean defaultValue) {
         return getField(Boolean.class, key, defaultValue);
     }
 
-    public String getStringField(@NonNull String key) {
-        return getField(String.class, key, null);
-    }
-
-    public String getStringField(@NonNull String key, String defaultValue) {
+    public String getString(@NonNull String key, String defaultValue) {
         return getField(String.class, key, defaultValue);
     }
 
-    public <T> T getField(@NonNull Class<T> clazz, @NonNull String key) {
-        return getField(clazz, key, null);
+    public int getRequestCode(){
+        return this.requestCode;
     }
 
-    public <T> T getField(@NonNull Class<T> clazz, @NonNull String key, T defaultValue) {
+    private  <T> T getField(@NonNull Class<T> clazz, @NonNull String key, T defaultValue) {
         Object field = mFields.get(key);
         if (field != null) {
             try {
                 return clazz.cast(field);
             } catch (ClassCastException e) {
                 e.printStackTrace();
-                //Debugger.fatal(e);
+                Debugger.fatal(e);
             }
         }
         return defaultValue;
@@ -247,5 +109,67 @@ public class UriRequest {
         }
         s.append("}");
         return s.toString();
+    }
+
+    public static class Builder {
+        private Context mContext;
+        private Uri mUri;
+        private int requestCode;
+        private Map<String, Object> mData;
+
+        public Builder(Context context, Uri uri) {
+            this.mContext = context;
+            this.mUri = uri;
+            mData=new HashMap<>();
+        }
+
+        public Builder setRequestDataMap(Map<String, Object> dataMap) {
+            this.mData.putAll(dataMap);
+            return this;
+        }
+
+        public Builder setInt(String key,int intData){
+            putField(key,intData);
+            return this;
+        }
+
+        public Builder setLong(String key,long longData){
+            putField(key,longData);
+            return this;
+        }
+
+        public Builder setString(String key,String strData){
+            putField(key,strData);
+            return this;
+        }
+
+        public Builder setBoolean(String key,boolean boolData){
+            putField(key,boolData);
+            return this;
+        }
+
+        public Builder setObject(String key,Object objData){
+            putField(key,objData);
+            return this;
+        }
+
+        public Builder setRequestCode(int requestCode){
+            this.requestCode=requestCode;
+            return this;
+        }
+
+        public UriRequest build(){
+            return new UriRequest(this);
+        }
+
+        /**
+         * 设置Extra参数
+         */
+        private <T> void putField(@NonNull String key, T val) {
+            if (val != null) {
+                mData.put(key, val);
+            }
+        }
+
     }
 }

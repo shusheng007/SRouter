@@ -2,100 +2,81 @@ package top.ss007.router.core;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
+
+import java.security.InvalidParameterException;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import top.ss007.router.utils.RouterUtils;
 
 
 /**
  * 最顶层的 {@link UriHandler}
- *
+ * <p>
  * Created by jzj on 2017/4/17.
  */
 public abstract class RootUriHandler extends UriHandler {
 
     private final Context mContext;
-    private OnCompleteListener mGlobalOnCompleteListener;
 
     public RootUriHandler(Context context) {
         mContext = context.getApplicationContext();
     }
 
-    public Context getContext() {
-        return mContext;
+    public void startNavigate(@NonNull UriRequest request) {
+        startRequest(request, false);
     }
 
-
-    /**
-     * 全局 {@link OnCompleteListener}
-     */
-    public void setGlobalOnCompleteListener(OnCompleteListener listener) {
-        mGlobalOnCompleteListener = listener;
+    public void startNavigateForResult(@NonNull UriRequest request) {
+        startRequest(request, true);
     }
 
-    /**
-     * 全局 {@link OnCompleteListener}
-     */
-    public OnCompleteListener getGlobalOnCompleteListener() {
-        return mGlobalOnCompleteListener;
-    }
-
-
-    @SuppressWarnings("ConstantConditions")
-    public void startUri(@NonNull UriRequest request) {
+    public void startRequest(@NonNull UriRequest request, boolean isForResult) {
         if (request == null) {
 
             String msg = "UriRequest为空";
             Debugger.fatal(msg);
-            UriRequest req = new UriRequest(mContext, Uri.EMPTY).setErrorMessage(msg);
-            onError(req, UriResult.CODE_BAD_REQUEST);
+            UriRequest req = new UriRequest.Builder(mContext, Uri.EMPTY).build();
+            onError(req, RouteStatusCode.CODE_BAD_REQUEST);
 
         } else if (request.getContext() == null) {
 
             String msg = "UriRequest.Context为空";
             Debugger.fatal(msg);
-            UriRequest req = new UriRequest(mContext, request.getUri(), request.getFields())
-                    .setErrorMessage(msg);
-            onError(req, UriResult.CODE_BAD_REQUEST);
+            UriRequest req = new UriRequest.Builder(mContext, Uri.EMPTY).build();
+            onError(req, RouteStatusCode.CODE_BAD_REQUEST);
 
-        } else if (request.isUriEmpty()) {
+        } else if (isUriEmpty(request.getUri())) {
 
             String msg = "跳转链接为空";
             Debugger.e(msg);
-            request.setErrorMessage(msg);
-            onError(request, UriResult.CODE_BAD_REQUEST);
+            onError(request, RouteStatusCode.CODE_BAD_REQUEST);
 
         } else {
-
+            if (isForResult && request.getRequestCode() == 0) {
+                throw new InvalidParameterException("UriRequest 需要设置请求码");
+            }
             if (Debugger.isEnableLog()) {
                 Debugger.i("");
                 Debugger.i("---> receive request: %s", request.toFullString());
             }
-            handle(request, new RootUriCallback(request));
+            handleUri(request, new RootUriCallback(request));
         }
     }
 
     private void onSuccess(@NonNull UriRequest request) {
-        OnCompleteListener globalListener = mGlobalOnCompleteListener;
-        if (globalListener != null) {
-            globalListener.onSuccess(request);
-        }
-        final OnCompleteListener listener = request.getOnCompleteListener();
-        if (listener != null) {
-            listener.onSuccess(request);
-        }
+
     }
 
     private void onError(@NonNull UriRequest request, int resultCode) {
-        OnCompleteListener globalListener = mGlobalOnCompleteListener;
-        if (globalListener != null) {
-            globalListener.onError(request, resultCode);
-        }
-        final OnCompleteListener listener = request.getOnCompleteListener();
-        if (listener != null) {
-            listener.onError(request, resultCode);
-        }
+
     }
 
+
+    private boolean isUriEmpty(Uri uri) {
+        return Uri.EMPTY.equals(uri);
+    }
 
 
     protected class RootUriCallback implements UriCallback {
@@ -108,29 +89,30 @@ public abstract class RootUriHandler extends UriHandler {
 
         @Override
         public void onNext() {
-            onComplete(UriResult.CODE_NOT_FOUND);
+            onComplete(RouteStatusCode.CODE_NOT_FOUND);
         }
 
         @Override
         public void onComplete(int resultCode) {
             switch (resultCode) {
 
-                case UriResult.CODE_REDIRECT:
+                case RouteStatusCode.CODE_REDIRECT:
                     // 重定向，重新跳转
                     Debugger.i("<--- redirect, result code = %s", resultCode);
-                    startUri(mRequest);
+                    if (mRequest.getRequestCode() == 0)
+                        startNavigate(mRequest);
+                    else
+                        startNavigateForResult(mRequest);
                     break;
 
-                case UriResult.CODE_SUCCESS:
+                case RouteStatusCode.CODE_SUCCESS:
                     // 跳转成功
-                    mRequest.putField(UriRequest.FIELD_RESULT_CODE, resultCode);
                     onSuccess(mRequest);
                     Debugger.i("<--- success, result code = %s", resultCode);
                     break;
 
                 default:
                     // 跳转失败
-                    mRequest.putField(UriRequest.FIELD_RESULT_CODE, resultCode);
                     onError(mRequest, resultCode);
                     Debugger.i("<--- error, result code = %s", resultCode);
                     break;

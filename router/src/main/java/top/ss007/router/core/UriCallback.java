@@ -7,12 +7,12 @@ package top.ss007.router.core;
 public interface UriCallback {
 
     /**
-     * 处理完成，继续后续流程。
+     * 当前层以及处理完成，继续执行后续流程。
      */
     void onNext();
 
     /**
-     * 处理完成，终止分发流程。
+     * 当前层完成后终止分发流程。
      *
      * @param resultCode 结果
      */

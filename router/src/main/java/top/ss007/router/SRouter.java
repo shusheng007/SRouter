@@ -58,17 +58,16 @@ public class SRouter {
         return ROOT_HANDLER;
     }
 
-    public static void startUri(UriRequest request) {
-        getRootHandler().startUri(request);
+    public static void startNavigate(UriRequest request) {
+        getRootHandler().startNavigate(request);
     }
 
-    public static void startUri(Context context, String uri) {
-        getRootHandler().startUri(new UriRequest(context, uri));
+    public static void startNavigateForResult(UriRequest request) {
+        getRootHandler().startNavigateForResult(request);
     }
-
 
     /**
-     * 创建所有实现类的实例，使用 {@link RouterProvider} 方法或无参数构造。对于声明了singleton的实现类，不会重复创建实例。
+     * 创建所有实现类的实例，对于声明了singleton的实现类，不会重复创建实例。
      *
      * @return 可能返回EmptyList，List中的元素不为空
      */

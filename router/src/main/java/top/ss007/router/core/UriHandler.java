@@ -4,49 +4,44 @@ package top.ss007.router.core;
 import androidx.annotation.NonNull;
 
 /**
- * 处理某一类或某个URI。支持添加若干个 {@link UriInterceptor} 。
- * 子类主要覆写 {@link #shouldHandle(UriRequest)} 和 {@link #handleInternal(UriRequest, UriCallback)} 方法。
- *
- * Created by jzj on 17/2/27.
+ * Uri处理类
  */
 public abstract class UriHandler {
 
     protected InterceptorHandler mInterceptor;
 
-    @SuppressWarnings("ConstantConditions")
-    public UriHandler addInterceptor(@NonNull UriInterceptor interceptor) {
+    public void getInterceptor(@NonNull UriInterceptor interceptor) {
         if (interceptor != null) {
             if (mInterceptor == null) {
                 mInterceptor = new InterceptorHandler();
             }
             mInterceptor.addInterceptor(interceptor);
         }
-        return this;
     }
 
-    public UriHandler addInterceptors(UriInterceptor... interceptors) {
+    public void getInterceptors(UriInterceptor... interceptors) {
         if (interceptors != null && interceptors.length > 0) {
             if (mInterceptor == null) {
                 mInterceptor = new InterceptorHandler();
             }
+            mInterceptor.clearInterceptors();
             for (UriInterceptor interceptor : interceptors) {
                 mInterceptor.addInterceptor(interceptor);
             }
         }
-        return this;
     }
 
 
     /**
-     * 处理URI。通常不需要覆写本方法。
+     * 处理URI
      *
-     * @param request  URI跳转请求
+     * @param request  Uri请求
      * @param callback 处理完成后的回调
      */
-    public void handle(@NonNull final UriRequest request, @NonNull final UriCallback callback) {
+    public void handleUri(@NonNull final UriRequest request, @NonNull final UriCallback callback) {
         if (shouldHandle(request)) {
             Debugger.i("%s: handle request %s", this, request);
-            if (mInterceptor != null && !request.isSkipInterceptors()) {
+            if (mInterceptor != null) {
                 mInterceptor.handleIntercept(request, new UriCallback() {
                     @Override
                     public void onNext() {
@@ -58,7 +53,7 @@ public abstract class UriHandler {
                         callback.onComplete(result);
                     }
                 });
-            } else {
+            } else {//没有拦截器直接执行跳转
                 handleInternal(request, callback);
             }
         } else {

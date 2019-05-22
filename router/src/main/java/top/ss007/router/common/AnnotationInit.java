@@ -1,13 +1,12 @@
-package top.ss007.router.core.common;
+package top.ss007.router.common;
 
 
 import top.ss007.router.core.UriHandler;
 
 /**
- * Created by jzj on 2018/4/28.
+ * 注解初始化接口
+ * @param <T>
  */
-
 public interface AnnotationInit<T extends UriHandler> {
-
     void init(T handler);
 }

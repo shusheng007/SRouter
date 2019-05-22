@@ -1,5 +1,6 @@
 package top.ss007.compiler;
 
+import com.google.auto.service.AutoService;
 import com.sun.tools.javac.code.Symbol;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;

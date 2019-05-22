@@ -1,4 +1,4 @@
-package top.ss007.router.core.common;
+package top.ss007.router.common;
 
 
 

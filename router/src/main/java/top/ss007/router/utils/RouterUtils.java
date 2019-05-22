@@ -9,32 +9,16 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import top.ss007.router.core.Debugger;
 
-/**
- * Created by jzj on 2018/3/27.
- */
-
 public class RouterUtils {
 
-    /**
-     * 转成小写
-     */
     public static String toLowerCase(String s) {
         return TextUtils.isEmpty(s) ? s : s.toLowerCase();
     }
 
-    /**
-     * 转成非null的字符串，如果为null返回空串
-     */
     public static String toNonNullString(String s) {
         return s == null ? "" : s;
     }
 
-    /**
-     * 是否为null或长度为0
-     */
-    public static boolean isEmpty(Object[] objects) {
-        return objects == null || objects.length == 0;
-    }
 
     /**
      * 根据scheme和host生成字符串
@@ -42,6 +26,14 @@ public class RouterUtils {
     @NonNull
     public static String schemeHost(String scheme, String host) {
         return toNonNullString(toLowerCase(scheme)) + "://" + toNonNullString(toLowerCase(host));
+    }
+
+    public static String schemeHostPath(String scheme, String host, String path) {
+        return schemeHost(scheme, host) + insertSlashIfAbsent(path);
+    }
+
+    public static String schemeHostPath(Uri uri) {
+        return schemeHost(uri) + insertSlashIfAbsent(uri.getPath());
     }
 
     /**
@@ -81,7 +73,7 @@ public class RouterUtils {
     /**
      * 添加斜线前缀
      */
-    public static String appendSlash(String path) {
+    public static String insertSlashIfAbsent(String path) {
         if (path != null && !path.startsWith("/")) {
             path = '/' + path;
         }

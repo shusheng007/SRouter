@@ -46,7 +46,7 @@ public class SuffixConst {
     public static final String URI_ANNOTATION_HANDLER_CLASS =
             PKG + "uriHandlers.UriAnnotationHandler";
     public static final String URI_ANNOTATION_INIT_CLASS =
-            PKG + "core.common.IUriAnnotationInit";
+            PKG + "common.IUriAnnotationInit";
 
 
     // Android中的类名

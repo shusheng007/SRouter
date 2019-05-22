@@ -1,17 +1,21 @@
 package top.ss007.demolib1;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import top.ss007.annotation.RouterUri;
+import top.ss007.businessbase.RouteTable;
 import top.ss007.businessbase.services.Lib2Service;
 import top.ss007.businessbase.services.ServiceKeys;
+import top.ss007.demolib1.interceptors.ShowToastInterceptor;
 import top.ss007.router.SRouter;
+import top.ss007.router.core.UriRequest;
 import top.ss007.router.services.IFactory;
 
-@RouterUri(path ="/lib1")
+@RouterUri(path = RouteTable.LIB1_ACTIVITY1,interceptors = {ShowToastInterceptor.class})
 public class Lib1Activity extends AppCompatActivity {
 
     private Lib2Service lib2Service;
@@ -30,6 +34,13 @@ public class Lib1Activity extends AppCompatActivity {
         //lib2Service=SRouter.getService(Lib2Service.class, ServiceKeys.KEY_LIB2_SERVICE);
         findViewById(R.id.btn_getLib2Name).setOnClickListener(v -> {
             ((Button)v).setText(lib2Service.getLib2Name());
+        });
+
+
+        findViewById(R.id.btn_check_boy).setOnClickListener(v -> {
+            SRouter.startNavigate(new UriRequest.Builder(this, Uri.parse("srouter://host"+RouteTable.LIB2_ACT_MY_SON))
+                    .setString("name","my name is cc")
+                    .build());
         });
     }
 }
