@@ -8,6 +8,7 @@ import java.util.List;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import top.ss007.router.core.Debugger;
+import top.ss007.router.core.NavCallback;
 import top.ss007.router.core.RootUriHandler;
 import top.ss007.router.core.UriRequest;
 import top.ss007.router.services.IFactory;
@@ -28,9 +29,7 @@ public class SRouter {
 
     private static RootUriHandler ROOT_HANDLER;
 
-    /**
-     * 此初始化方法必须在主线程调用。
-     */
+
     @MainThread
     public static void init(@NonNull RootUriHandler rootUriHandler) {
         if (Looper.myLooper() != Looper.getMainLooper()) {
@@ -53,26 +52,23 @@ public class SRouter {
 
     public static RootUriHandler getRootHandler() {
         if (ROOT_HANDLER == null) {
-            throw new RuntimeException("请先调用init初始化UriRouter");
+            throw new RuntimeException("请先调用init");
         }
         return ROOT_HANDLER;
     }
 
-    public static void startNavigate(UriRequest request) {
-        getRootHandler().startNavigate(request);
-    }
 
-    public static void startNavigateForResult(UriRequest request) {
-        getRootHandler().startNavigateForResult(request);
+    public static void startNav(@NonNull UriRequest request, boolean isForResult, NavCallback callback) {
+        getRootHandler().startNav(request, false,callback);
     }
-
-    /**
-     * 创建所有实现类的实例，对于声明了singleton的实现类，不会重复创建实例。
-     *
-     * @return 可能返回EmptyList，List中的元素不为空
-     */
-    public static <I, T extends I> List<T> getAllServices(Class<I> clazz) {
-        return ServiceLoader.load(clazz).getAll();
+    public static void startNavNoCallback(@NonNull UriRequest request,boolean isForResult) {
+        getRootHandler().startNavNoCallback(request, isForResult);
+    }
+    public static void startNavNoResult(@NonNull UriRequest request) {
+        getRootHandler().startNavNoResult(request);
+    }
+    public static void startNavForResult(@NonNull UriRequest request) {
+        getRootHandler().startNavForResult(request);
     }
 
 
@@ -84,48 +80,64 @@ public class SRouter {
     }
 
     /**
-     * 创建指定key的实现类实例，使用 {@link //RouterProvider} 方法或无参数构造。对于声明了singleton的实现类，不会重复创建实例。
-     *
-     * @return 找不到或获取、构造失败，则返回null
+     * 获得指定接口的所有实现类
+     * @param clazz 服务接口
+     * @param <I>
+     * @param <T>
+     * @return
+     */
+    public static <I, T extends I> List<T> getAllServices(Class<I> clazz) {
+        return ServiceLoader.load(clazz).getAll();
+    }
+
+
+    /**
+     * 获得指定接口的指定实现类
+     * @param clazz 服务接口
+     * @param key   指定实现类对应的key
+     * @param <I>
+     * @param <T>
+     * @return
      */
     public static <I, T extends I> T getService(Class<I> clazz, String key) {
         return ServiceLoader.load(clazz).get(key);
     }
 
+
     /**
-     * 创建指定key的实现类实例，使用Context参数构造。对于声明了singleton的实现类，不会重复创建实例。
-     *
-     * @return 找不到或获取、构造失败，则返回null
+     * 获得指定接口的指定实现类，这个实现类存在一个context为参数的构造函数
+     * @param clazz 服务接口
+     * @param key   指定实现类对应的key
+     * @param context
+     * @param <I>
+     * @param <T>
+     * @return
      */
     public static <I, T extends I> T getService(Class<I> clazz, String key, Context context) {
         return ServiceLoader.load(clazz).get(key, context);
     }
 
+
     /**
-     * 创建指定key的实现类实例，使用指定的Factory构造。对于声明了singleton的实现类，不会重复创建实例。
-     *
-     * @param factory 用于从Class构造实例
-     * @return 找不到或获取、构造失败，则返回null
+     * 获得指定接口的指定实现类，可以使用factory使用此实现类的特定构造函数来构造实例
+     * @param clazz 服务接口
+     * @param key   指定实现类对应的key
+     * @param factory  用来使用实现类的指定构造函数来构造实例
+     * @param <I>
+     * @param <T>
+     * @return
      */
     public static <I, T extends I> T getService(Class<I> clazz, String key, IFactory factory) {
         return ServiceLoader.load(clazz).get(key, factory);
     }
 
 
-    /**
-     * 根据key获取实现类的Class。注意，对于声明了singleton的实现类，获取Class后还是可以创建新的实例。
-     *
-     * @return 找不到或获取失败，则返回null
-     */
+
     public static <I, T extends I> Class<T> getServiceClass(Class<I> clazz, String key) {
         return ServiceLoader.load(clazz).getClass(key);
     }
 
-    /**
-     * 获取所有实现类的Class。注意，对于声明了singleton的实现类，获取Class后还是可以创建新的实例。
-     *
-     * @return 可能返回EmptyList，List中的元素不为空
-     */
+
     public static <I, T extends I> List<Class<T>> getAllServiceClasses(Class<I> clazz) {
         return ServiceLoader.load(clazz).getAllClasses();
     }

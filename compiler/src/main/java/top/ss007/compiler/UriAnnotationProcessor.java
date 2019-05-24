@@ -1,6 +1,5 @@
 package top.ss007.compiler;
 
-import com.google.auto.service.AutoService;
 import com.squareup.javapoet.CodeBlock;
 import com.sun.tools.javac.code.Symbol;
 
@@ -9,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
@@ -18,7 +16,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 
-import top.ss007.annotation.RouterUri;
+import top.ss007.annotation.annotations.RouterUri;
 import top.ss007.annotation.internal.SuffixConst;
 
 //@AutoService(Processor.class)

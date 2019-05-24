@@ -1,6 +1,6 @@
 package top.ss007.demolib2.dataManagers;
 
-import top.ss007.annotation.RouterService;
+import top.ss007.annotation.annotations.RouterService;
 import top.ss007.businessbase.services.Lib2Service;
 import top.ss007.businessbase.services.ServiceKeys;
 

@@ -5,15 +5,15 @@ import android.net.Uri;
 
 
 import top.ss007.router.core.UriInterceptor;
+import top.ss007.router.core.UriRequest;
 import top.ss007.router.utils.RouterUtils;
 
 /**
  *
  * 这个是一个路由目的地的信息载体
  *
- * Created by jzj on 2018/3/26.
  */
-public class PathEntity {
+public class UriResponse {
 
     private String scheme;
     private String host;
@@ -22,13 +22,18 @@ public class PathEntity {
     private boolean isExport;
     private UriInterceptor[] mUriInterceptors;
 
-    public PathEntity(String scheme, String host, String path, Object target, boolean isExport, UriInterceptor[] uriInterceptors) {
+    public UriResponse(String scheme, String host, String path, Object target, boolean isExport, UriInterceptor[] uriInterceptors) {
         this.scheme = scheme;
         this.host = host;
         this.path = path;
         this.target = target;
         this.isExport = isExport;
         mUriInterceptors = uriInterceptors;
+    }
+
+    public static UriResponse fromUriRequest(UriRequest request){
+        Uri uri=request.getUri();
+       return new UriResponse(uri.getScheme(),uri.getHost(),uri.getPath(),null,false,null);
     }
 
     public Uri getUri(){

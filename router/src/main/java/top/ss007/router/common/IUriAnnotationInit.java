@@ -1,7 +1,7 @@
 package top.ss007.router.common;
 
 
-import top.ss007.annotation.RouterUri;
+import top.ss007.annotation.annotations.RouterUri;
 import top.ss007.router.uriHandlers.UriAnnotationHandler;
 
 /**

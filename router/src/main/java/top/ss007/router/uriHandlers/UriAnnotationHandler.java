@@ -9,10 +9,10 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import top.ss007.annotation.RouterUri;
-import top.ss007.router.activity.AbsActivity;
+import top.ss007.annotation.annotations.RouterUri;
+import top.ss007.router.activity.ActivityLauncher;
+import top.ss007.router.core.NavCallback;
 import top.ss007.router.core.RootUriHandler;
-import top.ss007.router.core.UriCallback;
 import top.ss007.router.core.UriInterceptor;
 import top.ss007.router.core.UriRequest;
 import top.ss007.router.common.IUriAnnotationInit;
@@ -28,10 +28,10 @@ public class UriAnnotationHandler extends RootUriHandler {
     /**
      * 包含了跳转目的地信息
      *
-     * key：scheme://host/path; value ：PathEntity
+     * key：scheme://host/path; value ：UriResponse
      *
      */
-    private final Map<String, PathEntity> mMap = new HashMap<>();
+    private final Map<String, UriResponse> mMap = new HashMap<>();
     /**
      * {@link RouterUri} 默认scheme
      */
@@ -81,36 +81,37 @@ public class UriAnnotationHandler extends RootUriHandler {
             host = mDefaultHost;
         }
         String schemeHost = RouterUtils.schemeHostPath(scheme, host,path);
-        PathEntity pathEntity = mMap.get(schemeHost);
-        if (pathEntity == null) {
-            pathEntity = new PathEntity(scheme,host,path,handler,exported,interceptors);
-            mMap.put(schemeHost, pathEntity);
+        UriResponse uriResponse = mMap.get(schemeHost);
+        if (uriResponse == null) {
+            uriResponse = new UriResponse(scheme,host,path,handler,exported,interceptors);
+            mMap.put(schemeHost, uriResponse);
         }
     }
 
 
     @Override
-    public void handleUri(@NonNull UriRequest request, @NonNull UriCallback callback) {
+    public void handleUri(@NonNull UriRequest request, NavCallback callback) {
         mInitHelper.ensureInit();
-        PathEntity pathEntity = mMap.get(RouterUtils.schemeHostPath(request.getUri()));
-        getInterceptors(pathEntity.getUriInterceptors());
+        UriResponse uriResponse = mMap.get(RouterUtils.schemeHostPath(request.getUri()));
+        if (uriResponse==null)
+            throw new UnsupportedOperationException("此路径没有注册");
+        request.setUriResponse(uriResponse);
+        getInterceptors(uriResponse.getUriInterceptors());
         super.handleUri(request, callback);
     }
 
     @Override
-    protected boolean shouldHandle(@NonNull UriRequest request) {
+    protected boolean shouldHandle(@NonNull UriRequest request,NavCallback callback) {
+        if (!"host".equals(request.getUri().getHost())){
+            callback.onInterrupt(request);
+            return false;
+        }
         return true;
     }
 
     @Override
-    protected void handleInternal(@NonNull UriRequest request, @NonNull UriCallback callback) {
-        PathEntity pathEntity = mMap.get(RouterUtils.schemeHostPath(request.getUri()));
-        if (pathEntity != null) {
-            new AbsActivity().navigation(request,pathEntity,callback);
-        } else {
-            // 没找到的继续分发
-            callback.onNext();
-        }
+    protected void handleInternal(@NonNull UriRequest request,NavCallback callback) {
+        ActivityLauncher.getInstance().navigation(request,callback);
     }
 
     @Override

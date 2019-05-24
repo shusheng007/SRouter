@@ -3,32 +3,25 @@ package top.ss007.router.core;
 import android.content.Context;
 import android.net.Uri;
 
-import android.text.TextUtils;
+import android.os.Bundle;
+import android.os.Parcelable;
 
-
-import java.util.HashMap;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import top.ss007.router.utils.RouterUtils;
+import top.ss007.router.uriHandlers.UriResponse;
 
-/**
- * 一次URI跳转请求，包含了Request和Response的功能。
- * 可以通过Fields存放任意扩展参数；
- *
- * <p>
- * Created by jzj on 2017/4/11.
- */
+
 public class UriRequest {
 
     @NonNull
     private  Context mContext;
     @NonNull
     private Uri mUri;
-    private int requestCode;
+    private int requestCode=-1;
     @NonNull
-    private  Map<String, Object> mFields;
+    private Bundle mExtras;
+    
+    private UriResponse mUriResponse;
 
 
 
@@ -36,14 +29,21 @@ public class UriRequest {
         this.mContext=builder.mContext;
         this.mUri=builder.mUri;
         this.requestCode=builder.requestCode;
-        this.mFields=builder.mData;
+        this.mExtras =builder.mData;
     }
 
 
+    public void setUriResponse(UriResponse uriResponse) {
+        mUriResponse = uriResponse;
+    }
+
+    public UriResponse getUriResponse() {
+        return mUriResponse;
+    }
 
     @NonNull
-    public Map<String, Object> getFields() {
-        return mFields;
+    public Bundle getExtras() {
+        return mExtras;
     }
 
     @NonNull
@@ -77,7 +77,7 @@ public class UriRequest {
     }
 
     private  <T> T getField(@NonNull Class<T> clazz, @NonNull String key, T defaultValue) {
-        Object field = mFields.get(key);
+        Object field = mExtras.get(key);
         if (field != null) {
             try {
                 return clazz.cast(field);
@@ -98,14 +98,8 @@ public class UriRequest {
     public String toFullString() {
         StringBuilder s = new StringBuilder(mUri.toString());
         s.append(", fields = {");
-        boolean first = true;
-        for (Map.Entry<String, Object> entry : mFields.entrySet()) {
-            if (first) {
-                first = false;
-            } else {
-                s.append(", ");
-            }
-            s.append(entry.getKey()).append(" = ").append(entry.getValue());
+        for (String s1 : mExtras.keySet()) {
+            s.append(mExtras.get(s1));
         }
         s.append("}");
         return s.toString();
@@ -115,41 +109,41 @@ public class UriRequest {
         private Context mContext;
         private Uri mUri;
         private int requestCode;
-        private Map<String, Object> mData;
+        private Bundle mData;
 
         public Builder(Context context, Uri uri) {
             this.mContext = context;
             this.mUri = uri;
-            mData=new HashMap<>();
+            mData=new Bundle();
         }
 
-        public Builder setRequestDataMap(Map<String, Object> dataMap) {
+        public Builder setRequestData(Bundle dataMap) {
             this.mData.putAll(dataMap);
             return this;
         }
 
         public Builder setInt(String key,int intData){
-            putField(key,intData);
+            mData.putInt(key,intData);
             return this;
         }
 
         public Builder setLong(String key,long longData){
-            putField(key,longData);
+            mData.putLong(key,longData);
             return this;
         }
 
         public Builder setString(String key,String strData){
-            putField(key,strData);
+            mData.putString(key,strData);
             return this;
         }
 
         public Builder setBoolean(String key,boolean boolData){
-            putField(key,boolData);
+            mData.putBoolean(key,boolData);
             return this;
         }
 
-        public Builder setObject(String key,Object objData){
-            putField(key,objData);
+        public Builder setParcelable(String key, Parcelable parcelableData){
+            mData.putParcelable(key,parcelableData);
             return this;
         }
 
@@ -165,11 +159,11 @@ public class UriRequest {
         /**
          * 设置Extra参数
          */
-        private <T> void putField(@NonNull String key, T val) {
+/*        private <T> void putField(@NonNull String key, T val) {
             if (val != null) {
                 mData.put(key, val);
             }
-        }
+        }*/
 
     }
 }

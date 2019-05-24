@@ -42,8 +42,7 @@ public class ServiceLoader<I> {
         @Override
         protected void doInit() {
             try {
-                // 反射调用Init类，避免引用的类过多，导致main dex capacity exceeded问题
-                // 这个类需要操作字节码动态生成，目前没有做
+                //这个类需要操作字节码动态生成，将processor生产的初始化类整合到一个类中
                 Class.forName(SuffixConst.SERVICE_LOADER_INIT)
                         .getMethod(SuffixConst.INIT_METHOD)
                         .invoke(null);
@@ -62,11 +61,13 @@ public class ServiceLoader<I> {
         sInitHelper.lazyInit();
     }
 
+
     /**
-     * InitClass使用的初始化接口
-     *
-     * @param interfaceClass 接口类
-     * @param implementClass 实现类
+     * 很重要，生成的代码就是通过这个方法将目标类的信息保存到一个map里面的
+     * @param interfaceClass 服务接口
+     * @param key            指定实现来在map中对应的key
+     * @param implementClass 服务接口的实现类
+     * @param singleton      是否单例
      */
     public static void put(Class interfaceClass, String key, Class implementClass, boolean singleton) {
         ServiceLoader loader = SERVICES.get(interfaceClass);
@@ -77,10 +78,7 @@ public class ServiceLoader<I> {
         loader.putImpl(key, implementClass, singleton);
     }
 
-    /**
-     * 根据接口获取 {@link ServiceLoader}
-     */
-    @SuppressWarnings("unchecked")
+
     public static <T> ServiceLoader<T> load(Class<T> interfaceClass) {
         sInitHelper.ensureInit();
         if (interfaceClass == null) {
@@ -120,50 +118,28 @@ public class ServiceLoader<I> {
         }
     }
 
-    /**
-     * 创建指定key的实现类实例，使用 {@link //RouterProvider} 方法或无参数构造。对于声明了singleton的实现类，不会重复创建实例。
-     *
-     * @return 可能返回null
-     */
+
     public <T extends I> T get(String key) {
         return createInstance(mMap.get(key), null);
     }
 
-    /**
-     * 创建指定key的实现类实例，使用Context参数构造。对于声明了singleton的实现类，不会重复创建实例。
-     *
-     * @return 可能返回null
-     */
+
     public <T extends I> T get(String key, Context context) {
         return createInstance(mMap.get(key), new ContextFactory(context));
     }
 
-    /**
-     * 创建指定key的实现类实例，使用指定的Factory构造。对于声明了singleton的实现类，不会重复创建实例。
-     *
-     * @return 可能返回null
-     */
+
     public <T extends I> T get(String key, IFactory factory) {
         return createInstance(mMap.get(key), factory);
     }
 
 
-    /**
-     * 获取指定key的实现类。注意，对于声明了singleton的实现类，获取Class后还是可以创建新的实例。
-     *
-     * @return 可能返回null
-     */
-    @SuppressWarnings("unchecked")
+
     public <T extends I> Class<T> getClass(String key) {
         return (Class<T>) mMap.get(key).getImplementationClazz();
     }
 
-    /**
-     * 获取所有实现类的Class。注意，对于声明了singleton的实现类，获取Class后还是可以创建新的实例。
-     *
-     * @return 可能返回EmptyList，List中的元素不为空
-     */
-    @SuppressWarnings("unchecked")
+
     @NonNull
     public <T extends I> List<Class<T>> getAllClasses() {
         List<Class<T>> list = new ArrayList<>(mMap.size());
@@ -196,20 +172,15 @@ public class ServiceLoader<I> {
                     factory = DefaultFactory.INSTANCE;
                 }
                 T t = factory.create(clazz);
-               // Debugger.i("[ServiceLoader] create instance: %s, result = %s", clazz, t);
+                Debugger.i("[ServiceLoader] create instance: %s, result = %s", clazz, t);
                 return t;
             } catch (Exception e) {
-               // Debugger.fatal(e);
+                Debugger.fatal(e);
             }
         }
         return null;
     }
 
-    /**
-     * 创建所有实现类的实例，使用指定Factory构造。对于声明了singleton的实现类，不会重复创建实例。
-     *
-     * @return 可能返回EmptyList，List中的元素不为空
-     */
     @NonNull
     public <T extends I> List<T> getAll(IFactory factory) {
         Collection<ServiceImpl> services = mMap.values();
@@ -226,11 +197,6 @@ public class ServiceLoader<I> {
         return list;
     }
 
-    /**
-     * 创建所有实现类的实例，使用 {@link RouterProvider} 方法或无参数构造。对于声明了singleton的实现类，不会重复创建实例。
-     *
-     * @return 可能返回EmptyList，List中的元素不为空
-     */
     @NonNull
     public <T extends I> List<T> getAll() {
         return getAll((IFactory) null);

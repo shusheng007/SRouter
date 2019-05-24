@@ -1,4 +1,4 @@
-package top.ss007.annotation;
+package top.ss007.annotation.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 指定一个Uri跳转，此注解可以用在Activity和UriHandler上
+ * 指定一个Uri跳转，此注解可以用在Activity上
  *
  * Created by jzj on 2018/3/19.
  */
@@ -35,7 +35,7 @@ public @interface RouterUri {
     boolean exported() default false;
 
     /**
-     * 要添加的interceptors
+     * 拦截器
      */
     Class[] interceptors() default {};
 }

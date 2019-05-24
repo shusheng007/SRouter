@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.btn_show_lib1).setOnClickListener(v->{
-            SRouter.startNavigate(new UriRequest.Builder(this, Uri.parse("srouter://host"+RouteTable.LIB1_ACTIVITY1))
+            SRouter.startNavNoResult(new UriRequest.Builder(this, Uri.parse("srouter://host"+RouteTable.LIB1_ACTIVITY1))
             .build());
         });
     }

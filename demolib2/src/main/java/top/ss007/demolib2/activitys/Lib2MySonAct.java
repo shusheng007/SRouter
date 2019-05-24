@@ -1,7 +1,7 @@
 package top.ss007.demolib2.activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
-import top.ss007.annotation.RouterUri;
+import top.ss007.annotation.annotations.RouterUri;
 import top.ss007.businessbase.RouteTable;
 import top.ss007.demolib2.R;
 

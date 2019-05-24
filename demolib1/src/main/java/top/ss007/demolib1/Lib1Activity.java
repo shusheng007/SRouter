@@ -6,7 +6,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import top.ss007.annotation.RouterUri;
+import top.ss007.annotation.annotations.RouterUri;
 import top.ss007.businessbase.RouteTable;
 import top.ss007.businessbase.services.Lib2Service;
 import top.ss007.businessbase.services.ServiceKeys;
@@ -38,7 +38,7 @@ public class Lib1Activity extends AppCompatActivity {
 
 
         findViewById(R.id.btn_check_boy).setOnClickListener(v -> {
-            SRouter.startNavigate(new UriRequest.Builder(this, Uri.parse("srouter://host"+RouteTable.LIB2_ACT_MY_SON))
+            SRouter.startNavNoResult(new UriRequest.Builder(this, Uri.parse("srouter://host"+RouteTable.LIB2_ACT_MY_SON))
                     .setString("name","my name is cc")
                     .build());
         });

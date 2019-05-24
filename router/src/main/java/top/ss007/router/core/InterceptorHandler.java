@@ -6,11 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import top.ss007.router.uriHandlers.UriResponse;
 
 
 /**
  * 支持添加多个子 {@link UriInterceptor} ，按先后顺序依次异步执行
- * Created by jzj on 2017/4/11.
+ *
  */
 public class InterceptorHandler {
 
@@ -27,30 +28,31 @@ public class InterceptorHandler {
     }
 
 
-    public void handleIntercept(@NonNull UriRequest request, @NonNull UriCallback callback){
+    public void handleIntercept(@NonNull UriRequest request, @NonNull InterceptorCallback callback){
         next(mInterceptors.iterator(), request, callback);
     }
 
     private void next(@NonNull final Iterator<UriInterceptor> iterator, @NonNull final UriRequest request,
-                      @NonNull final UriCallback callback) {
+                      @NonNull final InterceptorCallback callback) {
         if (iterator.hasNext()) {
             UriInterceptor t = iterator.next();
             if (Debugger.isEnableLog()) {
                 Debugger.i("    %s: intercept, request = %s", t.getClass().getSimpleName(), request);
             }
-            t.intercept(request, new UriCallback() {
+            t.intercept(request,new InterceptorCallback() {
+
                 @Override
-                public void onNext() {
+                public void onNext(UriRequest request) {
                     next(iterator, request, callback);
                 }
 
                 @Override
-                public void onComplete(int resultCode) {
-                    callback.onComplete(resultCode);
+                public void onInterrupt(Throwable exception) {
+                    callback.onInterrupt(exception);
                 }
             });
-        } else {
-            callback.onNext();
+        } else {//拦截器处理完了就继续
+            callback.onNext(request);
         }
     }
 }

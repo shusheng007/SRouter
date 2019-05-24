@@ -6,12 +6,11 @@ import java.lang.reflect.Modifier;
 
 import androidx.annotation.NonNull;
 import top.ss007.router.core.Debugger;
-import top.ss007.router.core.UriCallback;
+import top.ss007.router.core.NavCallback;
 import top.ss007.router.core.UriHandler;
 import top.ss007.router.core.UriRequest;
 import top.ss007.router.core.RouteStatusCode;
 import top.ss007.router.common.RouterComponents;
-import top.ss007.router.uriHandlers.PathEntity;
 
 
 /**
@@ -19,22 +18,36 @@ import top.ss007.router.uriHandlers.PathEntity;
  * <p>
  * Created by jzj on 2017/4/11.
  */
-public class AbsActivity {
+public class ActivityLauncher {
 
-    public void navigation(UriRequest request, PathEntity pathEntity, @NonNull UriCallback callback) {
-        Intent intent = createIntent(request, pathEntity.getTarget());
+    private ActivityLauncher() {
+    }
+
+    public static ActivityLauncher getInstance() {
+        return InstanceHolder.INSTANCE;
+    }
+
+    private static class InstanceHolder {
+        private static ActivityLauncher INSTANCE = new ActivityLauncher();
+    }
+
+    public void navigation(UriRequest request, @NonNull NavCallback callback) {
+        Intent intent = createIntent(request, request.getUriResponse().getTarget());
         if (intent == null || intent.getComponent() == null) {
-            Debugger.fatal("AbsActivity.createIntent()应返回的带有ClassName的显式跳转Intent");
-            callback.onComplete(RouteStatusCode.CODE_ERROR);
+            Debugger.fatal("ActivityLauncher.createIntent()应返回的带有ClassName的显式跳转Intent");
+            if (callback != null)
+                callback.onInterrupt(request);
             return;
         }
-        intent.setData(pathEntity.getUri());
-        //intent.putExtra("")
+        intent.setData(request.getUri());
+        intent.putExtras(request.getExtras());
+
         int resultCode = RouterComponents.startActivity(request, intent);
         // 回调方法
         onActivityStartComplete(request, resultCode);
         // 完成
-        callback.onComplete(resultCode);
+        if (callback != null)
+            callback.onArrival(request);
     }
 
 
