@@ -11,15 +11,6 @@ public abstract class UriHandler {
 
     protected InterceptorHandler mInterceptor;
 
-    public void getInterceptor(@NonNull UriInterceptor interceptor) {
-        if (interceptor != null) {
-            if (mInterceptor == null) {
-                mInterceptor = new InterceptorHandler();
-            }
-            mInterceptor.addInterceptor(interceptor);
-        }
-    }
-
     public void getInterceptors(UriInterceptor... interceptors) {
         if (mInterceptor == null) {
             mInterceptor = new InterceptorHandler();

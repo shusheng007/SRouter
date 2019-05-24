@@ -20,8 +20,6 @@ import top.ss007.router.utils.SingletonPool;
 
 /**
  * 通过接口Class获取实现类
- * <p>
- * Created by jzj on 2018/3/29.
  *
  * @param <I> 接口类型
  */
@@ -30,6 +28,7 @@ public class ServiceLoader<I> {
     private static final Map<Class, ServiceLoader> SERVICES = new HashMap<>();
 
     private final String mInterfaceName;
+
     private ServiceLoader(Class interfaceClass) {
         if (interfaceClass == null) {
             mInterfaceName = "";
@@ -64,6 +63,7 @@ public class ServiceLoader<I> {
 
     /**
      * 很重要，生成的代码就是通过这个方法将目标类的信息保存到一个map里面的
+     *
      * @param interfaceClass 服务接口
      * @param key            指定实现来在map中对应的key
      * @param implementClass 服务接口的实现类
@@ -99,8 +99,6 @@ public class ServiceLoader<I> {
     }
 
 
-
-
     /**
      * key --> class name
      */
@@ -108,6 +106,7 @@ public class ServiceLoader<I> {
 
     /**
      * 保存接口的实现类型
+     *
      * @param key
      * @param implementClass
      * @param singleton
@@ -132,7 +131,6 @@ public class ServiceLoader<I> {
     public <T extends I> T get(String key, IFactory factory) {
         return createInstance(mMap.get(key), factory);
     }
-
 
 
     public <T extends I> Class<T> getClass(String key) {

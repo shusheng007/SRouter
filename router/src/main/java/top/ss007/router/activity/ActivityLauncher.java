@@ -13,11 +13,6 @@ import top.ss007.router.core.RouteStatusCode;
 import top.ss007.router.common.RouterComponents;
 
 
-/**
- * 跳转Activity的 {@link UriHandler}
- * <p>
- * Created by jzj on 2017/4/11.
- */
 public class ActivityLauncher {
 
     private ActivityLauncher() {

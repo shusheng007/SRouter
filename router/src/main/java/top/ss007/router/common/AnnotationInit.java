@@ -5,7 +5,6 @@ import top.ss007.router.core.UriHandler;
 
 /**
  * 注解初始化接口
- * @param <T>
  */
 public interface AnnotationInit<T extends UriHandler> {
     void init(T handler);

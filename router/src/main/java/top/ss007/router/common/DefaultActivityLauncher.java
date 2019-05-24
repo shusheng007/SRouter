@@ -15,7 +15,6 @@ import top.ss007.router.core.RouteStatusCode;
 /**
  * 启动Activity的默认实现
  *
- * Created by jzj on 2018/4/28.
  */
 public class DefaultActivityLauncher {
 

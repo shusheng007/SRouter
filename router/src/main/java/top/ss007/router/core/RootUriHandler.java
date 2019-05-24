@@ -9,11 +9,6 @@ import androidx.annotation.NonNull;
 import top.ss007.router.uriHandlers.UriResponse;
 
 
-/**
- * 最顶层的 {@link UriHandler}
- * <p>
- * Created by jzj on 2017/4/17.
- */
 public abstract class RootUriHandler extends UriHandler {
 
     private final Context mContext;
@@ -22,20 +17,23 @@ public abstract class RootUriHandler extends UriHandler {
         mContext = context.getApplicationContext();
     }
 
-    public void startNav(@NonNull UriRequest request,boolean isForResult,NavCallback callback) {
-        startRequest(request, false,callback);
-    }
-    public void startNavNoCallback(@NonNull UriRequest request,boolean isForResult) {
-        startRequest(request, isForResult,null);
-    }
-    public void startNavNoResult(@NonNull UriRequest request) {
-        startRequest(request, false,null);
-    }
-    public void startNavForResult(@NonNull UriRequest request) {
-        startRequest(request, true,null);
+    public void startNav(@NonNull UriRequest request, boolean isForResult, NavCallback callback) {
+        startRequest(request, false, callback);
     }
 
-    private void startRequest(@NonNull UriRequest request, boolean isForResult,NavCallback callback) {
+    public void startNavNoCallback(@NonNull UriRequest request, boolean isForResult) {
+        startRequest(request, isForResult, null);
+    }
+
+    public void startNavNoResult(@NonNull UriRequest request) {
+        startRequest(request, false, null);
+    }
+
+    public void startNavForResult(@NonNull UriRequest request) {
+        startRequest(request, true, null);
+    }
+
+    private void startRequest(@NonNull UriRequest request, boolean isForResult, NavCallback callback) {
 
         if (request == null) {
             throw new NullPointerException("UriRequest 不能为null");
@@ -49,9 +47,6 @@ public abstract class RootUriHandler extends UriHandler {
         if (Debugger.isEnableLog()) {
             Debugger.i("---> receive request: %s", request.toFullString());
         }
-        handleUri(request,callback);
+        handleUri(request, callback);
     }
-
-
-
 }

@@ -23,8 +23,6 @@ public class UriRequest {
     
     private UriResponse mUriResponse;
 
-
-
     private UriRequest(Builder builder){
         this.mContext=builder.mContext;
         this.mUri=builder.mUri;
@@ -155,15 +153,5 @@ public class UriRequest {
         public UriRequest build(){
             return new UriRequest(this);
         }
-
-        /**
-         * 设置Extra参数
-         */
-/*        private <T> void putField(@NonNull String key, T val) {
-            if (val != null) {
-                mData.put(key, val);
-            }
-        }*/
-
     }
 }

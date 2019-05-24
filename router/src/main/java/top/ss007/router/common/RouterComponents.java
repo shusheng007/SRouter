@@ -11,23 +11,8 @@ import top.ss007.router.services.IFactory;
 /**
  * 用于配置组件
  *
- * Created by jzj on 2018/4/28.
  */
 public class RouterComponents {
-
-
-    @NonNull
-    private static IFactory sDefaultFactory = DefaultFactory.INSTANCE;
-
-
-    public static void setDefaultFactory(IFactory factory) {
-        sDefaultFactory = factory == null ? DefaultFactory.INSTANCE : factory;
-    }
-
-    @NonNull
-    public static IFactory getDefaultFactory() {
-        return sDefaultFactory;
-    }
 
     /**
      * @see AnnotationLoader#load(UriHandler, Class)

@@ -10,7 +10,6 @@ import top.ss007.router.core.Debugger;
  * 一些初始化任务可以在使用时按需初始化(通常在主线程)；
  * 但也可以提前调用并初始化(通常在后台线程)，使用时等待初始化完成。
  *
- * Created by jzj on 2018/4/26.
  */
 public abstract class LazyInitHelper {
 

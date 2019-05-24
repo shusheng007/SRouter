@@ -12,7 +12,6 @@ import top.ss007.router.services.IFactory;
 /**
  * 单例缓存
  *
- * Created by jzj on 2018/3/29.
  */
 public class SingletonPool {
 

@@ -1,6 +1,5 @@
 package top.ss007.router.core;
 
-import top.ss007.router.uriHandlers.UriResponse;
 
 public interface InterceptorCallback {
 
