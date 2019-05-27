@@ -26,7 +26,7 @@ public class Lib2ServiceImp implements Lib2Service {
 
     @Override
     public String getLib2Name() {
-        return "I come from lib2 ";
+        return String.format("I come from lib2 : %s",address);
     }
 
 }

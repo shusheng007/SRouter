@@ -40,6 +40,8 @@ public class Lib1Activity extends AppCompatActivity {
         findViewById(R.id.btn_check_boy).setOnClickListener(v -> {
             SRouter.startNavNoResult(new UriRequest.Builder(this, Uri.parse("srouter://host"+RouteTable.LIB2_ACT_MY_SON))
                     .setString("name","my name is cc")
+                    .setEnterAnim(R.anim.slide_in_bottom)
+                    .setExitAnim(R.anim.slide_out_bottom)
                     .build());
         });
     }

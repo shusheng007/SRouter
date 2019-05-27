@@ -18,15 +18,15 @@ public class UriResponse {
     private String scheme;
     private String host;
     private String path;
-    private Object target;
+    private Object destination;
     private boolean isExport;
     private UriInterceptor[] mUriInterceptors;
 
-    public UriResponse(String scheme, String host, String path, Object target, boolean isExport, UriInterceptor[] uriInterceptors) {
+    public UriResponse(String scheme, String host, String path, Object destination, boolean isExport, UriInterceptor[] uriInterceptors) {
         this.scheme = scheme;
         this.host = host;
         this.path = path;
-        this.target = target;
+        this.destination = destination;
         this.isExport = isExport;
         mUriInterceptors = uriInterceptors;
     }
@@ -40,8 +40,8 @@ public class UriResponse {
        return Uri.parse(scheme+"://"+host+RouterUtils.insertSlashIfAbsent(path));
     }
 
-    public Object getTarget() {
-        return target;
+    public Object getDestination() {
+        return destination;
     }
 
     public String getScheme() {

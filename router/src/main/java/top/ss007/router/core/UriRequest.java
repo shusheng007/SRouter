@@ -20,14 +20,21 @@ public class UriRequest {
     private int requestCode=-1;
     @NonNull
     private Bundle mExtras;
-    
+    private int mFlags=-1;
+
+    private int mEnterAnim = -1;
+    private int mExitAnim = -1;
+
     private UriResponse mUriResponse;
 
     private UriRequest(Builder builder){
-        this.mContext=builder.mContext;
-        this.mUri=builder.mUri;
+        this.mContext=builder.context;
+        this.mUri=builder.uri;
         this.requestCode=builder.requestCode;
-        this.mExtras =builder.mData;
+        this.mExtras =builder.data;
+        this.mFlags=builder.flags;
+        this.mEnterAnim=builder.enterAnim;
+        this.mExitAnim=builder.exitAnim;
     }
 
 
@@ -70,6 +77,18 @@ public class UriRequest {
         return getField(String.class, key, defaultValue);
     }
 
+    public int getFlags() {
+        return mFlags;
+    }
+
+    public int getEnterAnim() {
+        return mEnterAnim;
+    }
+
+    public int getExitAnim() {
+        return mExitAnim;
+    }
+
     public int getRequestCode(){
         return this.requestCode;
     }
@@ -104,44 +123,47 @@ public class UriRequest {
     }
 
     public static class Builder {
-        private Context mContext;
-        private Uri mUri;
+        private Context context;
+        private Uri uri;
         private int requestCode;
-        private Bundle mData;
+        private Bundle data;
+        private int flags;
+        private int enterAnim;
+        private int exitAnim;
 
         public Builder(Context context, Uri uri) {
-            this.mContext = context;
-            this.mUri = uri;
-            mData=new Bundle();
+            this.context = context;
+            this.uri = uri;
+            data =new Bundle();
         }
 
         public Builder setRequestData(Bundle dataMap) {
-            this.mData.putAll(dataMap);
+            this.data.putAll(dataMap);
             return this;
         }
 
         public Builder setInt(String key,int intData){
-            mData.putInt(key,intData);
+            data.putInt(key,intData);
             return this;
         }
 
         public Builder setLong(String key,long longData){
-            mData.putLong(key,longData);
+            data.putLong(key,longData);
             return this;
         }
 
         public Builder setString(String key,String strData){
-            mData.putString(key,strData);
+            data.putString(key,strData);
             return this;
         }
 
         public Builder setBoolean(String key,boolean boolData){
-            mData.putBoolean(key,boolData);
+            data.putBoolean(key,boolData);
             return this;
         }
 
         public Builder setParcelable(String key, Parcelable parcelableData){
-            mData.putParcelable(key,parcelableData);
+            data.putParcelable(key,parcelableData);
             return this;
         }
 
@@ -149,6 +171,23 @@ public class UriRequest {
             this.requestCode=requestCode;
             return this;
         }
+
+        public Builder setFlags(int flag){
+            this.flags=flag;
+            return this;
+        }
+
+        public Builder setEnterAnim(int enterAnim){
+            this.enterAnim=enterAnim;
+            return this;
+        }
+
+        public Builder setExitAnim(int exitAnim){
+            this.exitAnim=exitAnim;
+            return this;
+        }
+
+
 
         public UriRequest build(){
             return new UriRequest(this);

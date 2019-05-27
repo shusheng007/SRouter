@@ -1,16 +1,15 @@
 package top.ss007.router.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import java.lang.reflect.Modifier;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import top.ss007.router.core.Debugger;
 import top.ss007.router.core.NavCallback;
-import top.ss007.router.core.UriHandler;
 import top.ss007.router.core.UriRequest;
-import top.ss007.router.core.RouteStatusCode;
-import top.ss007.router.common.RouterComponents;
 
 
 public class ActivityLauncher {
@@ -27,22 +26,24 @@ public class ActivityLauncher {
     }
 
     public void navigation(UriRequest request, @NonNull NavCallback callback) {
-        Intent intent = createIntent(request, request.getUriResponse().getTarget());
+        Intent intent = createIntent(request, request.getUriResponse().getDestination());
         if (intent == null || intent.getComponent() == null) {
             Debugger.fatal("ActivityLauncher.createIntent()应返回的带有ClassName的显式跳转Intent");
             if (callback != null)
                 callback.onInterrupt(request);
             return;
         }
-        intent.setData(request.getUri());
         intent.putExtras(request.getExtras());
+        intent.setData(request.getUri());
 
-        int resultCode = RouterComponents.startActivity(request, intent);
-        // 回调方法
-        onActivityStartComplete(request, resultCode);
-        // 完成
-        if (callback != null)
-            callback.onArrival(request);
+        // Set flags.
+        int flags = request.getFlags();
+        if (-1 != flags) {
+            intent.setFlags(flags);
+        } else if (!(request.getContext() instanceof Activity)) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        startActivity(request,intent,callback);
     }
 
 
@@ -65,13 +66,23 @@ public class ActivityLauncher {
                 && !Modifier.isAbstract(clazz.getModifiers());
     }
 
-    /**
-     * 回调方法，子类可在此实现跳转动画等效果
-     *
-     * @param resultCode 跳转结果
-     */
-    protected void onActivityStartComplete(@NonNull UriRequest request, int resultCode) {
+    private void startActivity(@NonNull UriRequest request, @NonNull Intent intent,NavCallback callback) {
+        if (request.getRequestCode() >0){
+            if (request.getContext() instanceof Activity){
+                ActivityCompat.startActivityForResult((Activity) request.getContext(), intent, request.getRequestCode(),
+                        null);
+            }
+        }else {
+            ActivityCompat.startActivity(request.getContext(), intent, null);
+        }
 
+        if ((-1 != request.getEnterAnim() && -1 != request.getExitAnim()) && request.getContext() instanceof Activity) {
+            ((Activity) request.getContext()).overridePendingTransition(request.getEnterAnim(), request.getExitAnim());
+        }
+
+        if (callback!=null){
+            callback.onArrival(request);
+        }
     }
 
     @Override
