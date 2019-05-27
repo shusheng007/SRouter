@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'top.ss007.srouter'
 
 android {
     compileSdkVersion 28

@@ -4,14 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import top.ss007.businessbase.BaseController;
-import top.ss007.demolib2.services.Lib2Controller;
 import top.ss007.router.SRouter;
 import top.ss007.router.core.Debugger;
 import top.ss007.router.core.RootUriHandler;
-import top.ss007.router.generated.service.ServiceInit_1e6f6806b22052ace546ed1961c3c4fd;
-import top.ss007.router.generated.service.ServiceInit_2d9918ed6c84e4ee31af19029ca6d0ce;
-import top.ss007.router.generated.service.ServiceInit_Lib2ServiceImp;
 import top.ss007.router.uriHandlers.UriAnnotationHandler;
 import top.ss007.router.utils.DefaultLogger;
 
@@ -32,11 +27,11 @@ public class App extends Application {
         super.onCreate();
 
         //1
-        ServiceInit_Lib2ServiceImp.init();
-        ServiceInit_1e6f6806b22052ace546ed1961c3c4fd.init();
+       // ServiceInit_Lib2ServiceImp.init();
+       // ServiceInit_1e6f6806b22052ace546ed1961c3c4fd.init();
 
         //2
-        ServiceInit_2d9918ed6c84e4ee31af19029ca6d0ce.init();
+       // ServiceInit_2d9918ed6c84e4ee31af19029ca6d0ce.init();
 
         //        new AsyncTask<Void, Void, Void>() {
 //            @Override
