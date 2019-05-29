@@ -16,7 +16,7 @@ import org.gradle.api.Project;
 public class SRouterPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
-        System.out.println("***********plugin test***********");
+        System.out.println("***********plugin start**********");
         project.getExtensions().findByType(BaseExtension.class)
                 .registerTransform(new SRouterTransform());
     }

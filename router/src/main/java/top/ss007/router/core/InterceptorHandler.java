@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import top.ss007.router.uriHandlers.UriResponse;
+import top.ss007.router.utils.SLogger;
 
 
 /**
@@ -14,6 +14,7 @@ import top.ss007.router.uriHandlers.UriResponse;
  *
  */
 public class InterceptorHandler {
+    private static final String TAG="InterceptorHandler";
 
     private final List<UriInterceptor> mInterceptors = new LinkedList<>();
 
@@ -36,9 +37,7 @@ public class InterceptorHandler {
                       @NonNull final InterceptorCallback callback) {
         if (iterator.hasNext()) {
             UriInterceptor t = iterator.next();
-            if (Debugger.isEnableLog()) {
-                Debugger.i("    %s: intercept, request = %s", t.getClass().getSimpleName(), request);
-            }
+            SLogger.info(TAG,String.format("%s: intercept, request = %s", t.getClass().getSimpleName(), request));
             t.intercept(request,new InterceptorCallback() {
 
                 @Override

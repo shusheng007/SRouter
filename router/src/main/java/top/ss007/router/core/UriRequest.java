@@ -100,7 +100,6 @@ public class UriRequest {
                 return clazz.cast(field);
             } catch (ClassCastException e) {
                 e.printStackTrace();
-                Debugger.fatal(e);
             }
         }
         return defaultValue;

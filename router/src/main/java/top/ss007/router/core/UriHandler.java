@@ -2,14 +2,24 @@ package top.ss007.router.core;
 
 
 import androidx.annotation.NonNull;
-import top.ss007.router.uriHandlers.UriResponse;
 
 /**
  * Uri处理类
  */
 public abstract class UriHandler {
 
-    protected InterceptorHandler mInterceptor;
+    //默认scheme
+    protected final String mDefaultScheme;
+    //默认host
+    protected final String mDefaultHost;
+
+    private InterceptorHandler mInterceptor;
+
+    public UriHandler(String scheme, String host) {
+        this.mDefaultScheme = scheme;
+        this.mDefaultHost = host;
+    }
+
 
     public void getInterceptors(UriInterceptor... interceptors) {
         if (mInterceptor == null) {
@@ -27,15 +37,16 @@ public abstract class UriHandler {
     /**
      * 处理URI
      *
-     * @param request  Uri请求
+     * @param request Uri请求
      */
-    public void handleUri(@NonNull final UriRequest request,NavCallback callback) {
-        if (shouldHandle(request,callback)){
+    public void handleUri(@NonNull final UriRequest request, NavCallback callback) {
+        if (mDefaultScheme.equals(request.getUri().getScheme()) && mDefaultHost.equals(request.getUri().getHost())) {
+            buildUriRequest(request);
             if (mInterceptor != null) {
                 mInterceptor.handleIntercept(request, new InterceptorCallback() {
                     @Override
                     public void onNext(UriRequest request) {
-                        handleInternal(request,callback);
+                        handleInternal(request, callback);
                     }
 
                     @Override
@@ -45,11 +56,10 @@ public abstract class UriHandler {
 
                 });
             } else {//没有拦截器直接执行跳转
-                handleInternal(request,callback);
+                handleInternal(request, callback);
             }
-
-        }else {
-            callback.onInterrupt(request);
+        } else {
+            handleExternal(request, callback);
         }
     }
 
@@ -59,12 +69,19 @@ public abstract class UriHandler {
     }
 
     /**
-     * 是否要处理给定的URI。在 {@link UriInterceptor} 之前调用。
+     * 在执行跳转前，配置uriRequest
+     *
+     * @param request
      */
-    protected abstract boolean shouldHandle(@NonNull UriRequest request,NavCallback callback);
+    protected abstract void buildUriRequest(@NonNull UriRequest request);
 
     /**
-     * 处理URI。在 {@link UriInterceptor} 之后调用。
+     * 处理符合约定的scheme://host 的URI。在 {@link UriInterceptor} 之后调用。
      */
-    protected abstract void handleInternal(@NonNull UriRequest request,NavCallback callback);
+    protected abstract void handleInternal(@NonNull UriRequest request, NavCallback callback);
+
+    /**
+     * 处理不符合合约定的scheme://host 的URI，例如http://homecredit。
+     */
+    protected abstract void handleExternal(@NonNull UriRequest request, NavCallback callback);
 }

@@ -13,9 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import top.ss007.annotation.internal.SuffixConst;
 import top.ss007.annotation.service.ServiceImpl;
-import top.ss007.router.SRouter;
-import top.ss007.router.core.Debugger;
 import top.ss007.router.utils.LazyInitHelper;
+import top.ss007.router.utils.SLogger;
 import top.ss007.router.utils.SingletonPool;
 
 /**
@@ -24,6 +23,8 @@ import top.ss007.router.utils.SingletonPool;
  * @param <I> 接口类型
  */
 public class ServiceLoader<I> {
+
+    private static final String TAG="ServiceLoader";
 
     private static final Map<Class, ServiceLoader> SERVICES = new HashMap<>();
 
@@ -45,10 +46,9 @@ public class ServiceLoader<I> {
                 Class.forName(SuffixConst.SERVICE_LOADER_INIT)
                         .getMethod(SuffixConst.INIT_METHOD)
                         .invoke(null);
-                Debugger.i("[ServiceLoader] init class invoked");
+                SLogger.info(TAG,"[ServiceLoader] init class invoked");
             } catch (Exception e) {
                 e.printStackTrace();
-                //Debugger.fatal(e);
             }
         }
     };
@@ -82,7 +82,7 @@ public class ServiceLoader<I> {
     public static <T> ServiceLoader<T> load(Class<T> interfaceClass) {
         sInitHelper.ensureInit();
         if (interfaceClass == null) {
-            Debugger.fatal(new NullPointerException("ServiceLoader.load的class参数不应为空"));
+            SLogger.error("ServiceLoader","ServiceLoader.load的class参数不应为空");
             return EmptyServiceLoader.INSTANCE;
         }
         ServiceLoader service = SERVICES.get(interfaceClass);
@@ -170,10 +170,10 @@ public class ServiceLoader<I> {
                     factory = DefaultFactory.INSTANCE;
                 }
                 T t = factory.create(clazz);
-                Debugger.i("[ServiceLoader] create instance: %s, result = %s", clazz, t);
+                SLogger.info(TAG,String.format("[ServiceLoader] create instance: %s, result = %s", clazz, t));
                 return t;
             } catch (Exception e) {
-                Debugger.fatal(e);
+                e.printStackTrace();
             }
         }
         return null;

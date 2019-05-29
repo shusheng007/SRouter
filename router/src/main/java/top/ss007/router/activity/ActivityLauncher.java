@@ -7,7 +7,6 @@ import java.lang.reflect.Modifier;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import top.ss007.router.core.Debugger;
 import top.ss007.router.core.NavCallback;
 import top.ss007.router.core.UriRequest;
 
@@ -28,7 +27,6 @@ public class ActivityLauncher {
     public void navigation(UriRequest request, @NonNull NavCallback callback) {
         Intent intent = createIntent(request, request.getUriResponse().getDestination());
         if (intent == null || intent.getComponent() == null) {
-            Debugger.fatal("ActivityLauncher.createIntent()应返回的带有ClassName的显式跳转Intent");
             if (callback != null)
                 callback.onInterrupt(request);
             return;

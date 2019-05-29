@@ -3,11 +3,9 @@ package top.ss007.router.utils;
 import android.net.Uri;
 import android.text.TextUtils;
 
-
 import java.util.Map;
 
 import androidx.annotation.NonNull;
-import top.ss007.router.core.Debugger;
 
 public class RouterUtils {
 
@@ -64,7 +62,7 @@ public class RouterUtils {
                 }
                 return builder.build();
             } catch (Exception e) {
-                Debugger.fatal(e);
+                e.printStackTrace();
             }
         }
         return uri;

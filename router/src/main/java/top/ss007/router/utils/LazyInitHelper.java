@@ -1,9 +1,5 @@
 package top.ss007.router.utils;
 
-import android.os.SystemClock;
-
-import top.ss007.router.core.Debugger;
-
 /**
  * 初始化辅助工具类。
  *
@@ -13,8 +9,8 @@ import top.ss007.router.core.Debugger;
  */
 public abstract class LazyInitHelper {
 
-    private final String mTag;
-    private boolean mHasInit = false;
+    private  final String mTag;
+    private volatile boolean mHasInit = false;
 
     public LazyInitHelper(String tag) {
         mTag = tag;
@@ -41,19 +37,10 @@ public abstract class LazyInitHelper {
             synchronized (this) {
                 if (!mHasInit) {
                     mHasInit = true;
-                    long ts = 0;
-                    final boolean enableLog = Debugger.isEnableLog();
-                    if (enableLog) {
-                        ts = SystemClock.uptimeMillis();
-                    }
                     try {
                         doInit();
                     } catch (Throwable t) {
-                        Debugger.fatal(t);
-                    }
-                    if (enableLog) {
-                        Debugger.i("%s init cost %s ms", mTag,
-                                SystemClock.uptimeMillis() - ts);
+                        SLogger.error(mTag,"init failed",t);
                     }
                 }
             }

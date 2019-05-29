@@ -1,40 +1,21 @@
 package top.ss007.router.core;
 
-import android.content.Context;
-import android.net.Uri;
+import android.widget.Toast;
 
 import java.security.InvalidParameterException;
 
 import androidx.annotation.NonNull;
-import top.ss007.router.uriHandlers.UriResponse;
+import top.ss007.router.utils.SLogger;
 
 
 public abstract class RootUriHandler extends UriHandler {
+    private static final String TAG = "RootUriHandler";
 
-    private final Context mContext;
-
-    public RootUriHandler(Context context) {
-        mContext = context.getApplicationContext();
+    public RootUriHandler(String scheme, String host) {
+        super(scheme, host);
     }
 
-    public void startNav(@NonNull UriRequest request, boolean isForResult, NavCallback callback) {
-        startRequest(request, false, callback);
-    }
-
-    public void startNavNoCallback(@NonNull UriRequest request, boolean isForResult) {
-        startRequest(request, isForResult, null);
-    }
-
-    public void startNavNoResult(@NonNull UriRequest request) {
-        startRequest(request, false, null);
-    }
-
-    public void startNavForResult(@NonNull UriRequest request) {
-        startRequest(request, true, null);
-    }
-
-    private void startRequest(@NonNull UriRequest request, boolean isForResult, NavCallback callback) {
-
+    public void startRequest(@NonNull UriRequest request, boolean isForResult, NavCallback callback) {
         if (request == null) {
             throw new NullPointerException("UriRequest 不能为null");
         }
@@ -44,9 +25,14 @@ public abstract class RootUriHandler extends UriHandler {
         if (isForResult && request.getRequestCode() == -1) {
             throw new InvalidParameterException("UriRequest 需要设置请求码");
         }
-        if (Debugger.isEnableLog()) {
-            Debugger.i("---> receive request: %s", request.toFullString());
-        }
+        SLogger.info(TAG, String.format("---> receive request: %s", request.toFullString()));
         handleUri(request, callback);
     }
+
+    @Override
+    protected void handleExternal(@NonNull UriRequest request, NavCallback callback) {
+        Toast.makeText(request.getContext(),"暂时不支持URI:"+request.getUri().toString(),Toast.LENGTH_LONG).show();
+        // TODO: 2019/5/29 处理其他scheme的uri
+    }
+
 }

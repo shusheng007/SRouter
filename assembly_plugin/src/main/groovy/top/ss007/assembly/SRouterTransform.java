@@ -38,12 +38,12 @@ public class SRouterTransform extends Transform {
     private static final String GENERATE_INIT = "GenerateInit: ";
 
     /**
-     * Linux/Unix： com/sankuai/waimai/router/generated/service
-     * Windows：    com\sankuai\waimai\router\generated\service
+     * Linux/UNIX: /
+     * Windows:   top\ss007\router\generated\service
      */
     public static final String INIT_SERVICE_DIR = SuffixConst.GEN_PKG_SERVICE.replace('.', File.separatorChar);
     /**
-     * com/sankuai/waimai/router/generated/service
+     * top/ss007/router/generated/service
      */
     public static final String INIT_SERVICE_PATH = SuffixConst.GEN_PKG_SERVICE.replace('.', '/');
 
@@ -69,7 +69,6 @@ public class SRouterTransform extends Transform {
 
     @Override
     public void transform(TransformInvocation invocation) {
-        long ms = System.currentTimeMillis();
 
         Set<String> initClasses = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
@@ -100,14 +99,13 @@ public class SRouterTransform extends Transform {
             });
         }
         File dest = invocation.getOutputProvider().getContentLocation(
-                "WMRouter", TransformManager.CONTENT_CLASS,
+                "SRouter", TransformManager.CONTENT_CLASS,
                 ImmutableSet.of(QualifiedContent.Scope.PROJECT), Format.DIRECTORY);
         generateServiceInitClass(dest.getAbsolutePath(), initClasses);
-
     }
 
     /**
-     * 扫描由注解生成器生成到包 {@link //Const#GEN_PKG_SERVICE} 里的初始化类
+     * 扫描由注解生成器生成到包 {@link SuffixConst#GEN_PKG_SERVICE} 里的初始化类
      */
     private void scanJarFile(File file, Set<String> initClasses) throws IOException {
         JarFile jarFile = new JarFile(file);
@@ -123,7 +121,7 @@ public class SRouterTransform extends Transform {
     }
 
     /**
-     * 扫描由注解生成器生成到包 {@link //Const#GEN_PKG_SERVICE} 里的初始化类
+     * 扫描由注解生成器生成到包 {@link SuffixConst#GEN_PKG_SERVICE} 里的初始化类
      */
     private void scanDir(File dir, Set<String> initClasses) throws IOException {
         File packageDir = new File(dir, INIT_SERVICE_DIR);
@@ -149,7 +147,7 @@ public class SRouterTransform extends Transform {
     /**
      * 生成格式如下的代码，其中ServiceInit_xxx由注解生成器生成。
      * <pre>
-     * package com.sankuai.waimai.router.generated;
+     * package top.ss007.router.generated;
      *
      * public class ServiceLoaderInit {
      *
@@ -167,8 +165,6 @@ public class SRouterTransform extends Transform {
         }
 
         try {
-            long ms = System.currentTimeMillis();
-
             ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
             ClassVisitor cv = new ClassVisitor(Opcodes.ASM5, writer) {
             };
@@ -194,8 +190,6 @@ public class SRouterTransform extends Transform {
             File dest = new File(directory, className + SdkConstants.DOT_CLASS);
             dest.getParentFile().mkdirs();
             new FileOutputStream(dest).write(writer.toByteArray());
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
