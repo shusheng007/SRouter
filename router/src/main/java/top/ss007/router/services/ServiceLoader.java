@@ -53,9 +53,6 @@ public class ServiceLoader<I> {
         }
     };
 
-    /**
-     * @see LazyInitHelper#lazyInit()
-     */
     public static void lazyInit() {
         sInitHelper.lazyInit();
     }

@@ -44,6 +44,8 @@ public class ActivityLauncher {
         startActivity(request,intent,callback);
     }
 
+    public void navigateImplicit(){}
+
 
     /**
      * 创建用于跳转的Intent，必须是带有ClassName的显式跳转Intent，可覆写添加特殊参数

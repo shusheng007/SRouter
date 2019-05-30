@@ -4,14 +4,13 @@ import android.content.Context;
 
 import java.util.List;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import top.ss007.router.core.NavCallback;
 import top.ss007.router.core.RootUriHandler;
 import top.ss007.router.core.UriRequest;
 import top.ss007.router.services.IFactory;
 import top.ss007.router.services.ServiceLoader;
-import top.ss007.router.utils.SLogger;
+import top.ss007.router.uriHandlers.UriAnnotationHandler;
 
 
 /**
@@ -25,27 +24,25 @@ import top.ss007.router.utils.SLogger;
  */
 public class SRouter {
     private static final String TAG = "SRouter";
+    private static final String SCHEME="srouter";
+    private static final String HOST="ss007.top";
 
-    private static RootUriHandler ROOT_HANDLER;
+    private static RootUriHandler URI_HANDLER;
 
-    @MainThread
-    public static void init(@NonNull RootUriHandler rootUriHandler) {
-        if (ROOT_HANDLER == null) {
-            ROOT_HANDLER = rootUriHandler;
-        } else {
-            SLogger.error(TAG, "请勿重复初始化UriRouter");
+    private static RootUriHandler getRootHandler(String scheme,String host) {
+        if (URI_HANDLER == null) {
+            new UriAnnotationHandler(scheme,host);
         }
+        return URI_HANDLER;
     }
 
-    public static void lazyInit() {
+    public static void init(){
+        init(SCHEME,HOST);
+    }
+
+    public static void init(String scheme,String host){
         ServiceLoader.lazyInit();
-    }
-
-    private static RootUriHandler getRootHandler() {
-        if (ROOT_HANDLER == null) {
-            throw new NullPointerException("请先调用init");
-        }
-        return ROOT_HANDLER;
+        URI_HANDLER = getRootHandler(scheme,host);
     }
 
     /**
@@ -56,7 +53,7 @@ public class SRouter {
      * @param callback    导航回调
      */
     public static void startNav(@NonNull UriRequest request, boolean isForResult, NavCallback callback) {
-        getRootHandler().startRequest(request, isForResult, callback);
+        URI_HANDLER.startRequest(request, isForResult, callback);
     }
 
     /**
@@ -65,7 +62,7 @@ public class SRouter {
      * @param request
      */
     public static void startNavForResult(@NonNull UriRequest request) {
-        getRootHandler().startRequest(request, true, null);
+        URI_HANDLER.startRequest(request, true, null);
     }
 
     /**
@@ -74,11 +71,11 @@ public class SRouter {
      * @param request
      */
     public static void startNavNoResult(@NonNull UriRequest request) {
-        getRootHandler().startRequest(request, false, null);
+        URI_HANDLER.startRequest(request, false, null);
     }
 
     public static void startUri(@NonNull UriRequest request) {
-        getRootHandler().startRequest(request, false, null);
+        URI_HANDLER.startRequest(request, false, null);
     }
 
 

@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import top.ss007.router.core.InterceptorCallback;
 import top.ss007.router.core.UriInterceptor;
 import top.ss007.router.core.UriRequest;
-import top.ss007.router.uriHandlers.UriResponse;
 
 /**
  * Created by Ben.Wang
@@ -20,7 +19,7 @@ public class ShowToastInterceptor implements UriInterceptor {
 
     @Override
     public void intercept(@NonNull UriRequest request, @NonNull InterceptorCallback callback) {
-        Toast.makeText(request.getContext(),"URI:"+request.getUri(),Toast.LENGTH_LONG).show();
+        Toast.makeText(request.getContext(),"我来自拦截器，URI:"+request.getUri().toString(),Toast.LENGTH_SHORT).show();
         callback.onNext(request);
     }
 }
