@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
@@ -29,15 +30,12 @@ import javax.lang.model.util.Types;
 
 import top.ss007.annotation.internal.SuffixConst;
 
-/**
- * Created by jzj on 2018/3/23.
- */
-
 public abstract class BaseProcessor extends AbstractProcessor {
 
     protected Filer filer;
     protected Types types;
     protected Elements elements;
+    protected Messager mMessager;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -45,35 +43,24 @@ public abstract class BaseProcessor extends AbstractProcessor {
         filer = processingEnvironment.getFiler();
         types = processingEnvironment.getTypeUtils();
         elements = processingEnvironment.getElementUtils();
+        mMessager = processingEnvironment.getMessager();
     }
 
-    /**
-     * 从字符串获取TypeElement对象
-     */
+
     public TypeElement typeElement(String className) {
         return elements.getTypeElement(className);
     }
 
-    /**
-     * 从字符串获取TypeMirror对象
-     */
+
     public TypeMirror typeMirror(String className) {
         return typeElement(className).asType();
     }
 
-    /**
-     * 从字符串获取ClassName对象
-     */
+
     public ClassName className(String className) {
         return ClassName.get(typeElement(className));
     }
 
-    /**
-     * 从字符串获取TypeName对象，包含Class的泛型信息
-     */
-    public TypeName typeName(String className) {
-        return TypeName.get(typeMirror(className));
-    }
 
     public static String getClassName(TypeMirror typeMirror) {
         return typeMirror == null ? "" : typeMirror.toString();
@@ -91,38 +78,23 @@ public abstract class BaseProcessor extends AbstractProcessor {
         return element != null && types.isSubtype(element.asType(), typeMirror);
     }
 
-    /**
-     * 非抽象类
-     */
+
     public boolean isConcreteType(Element element) {
         return element instanceof TypeElement && !element.getModifiers().contains(
                 Modifier.ABSTRACT);
     }
 
-    /**
-     * 非抽象子类
-     */
+
     public boolean isConcreteSubType(Element element, String className) {
         return isConcreteType(element) && isSubType(element, className);
     }
 
-    /**
-     * 非抽象子类
-     */
     public boolean isConcreteSubType(Element element, TypeMirror typeMirror) {
         return isConcreteType(element) && isSubType(element, typeMirror);
     }
 
     public boolean isActivity(Element element) {
         return isConcreteSubType(element, SuffixConst.ACTIVITY_CLASS);
-    }
-
-    public boolean isFragment(Element element) {
-        return isConcreteSubType(element, SuffixConst.FRAGMENT_CLASS);
-    }
-
-    public boolean isFragmentV4(Element element) {
-        return isConcreteSubType(element, SuffixConst.FRAGMENT_V4_CLASS);
     }
 
     public boolean isHandler(Element element) {
@@ -147,18 +119,6 @@ public abstract class BaseProcessor extends AbstractProcessor {
         }
     }
 
-    /**
-     * 创建Handler。格式：<code>"com.demo.TestActivity"</code> 或 <code>new TestHandler()</code>
-     */
-    public CodeBlock buildHandler(boolean isActivity, Symbol.ClassSymbol cls) {
-        CodeBlock.Builder b = CodeBlock.builder();
-        if (isActivity) {
-            b.add("$S", cls.className());
-        } else {
-            b.add("new $T()", cls);
-        }
-        return b.build();
-    }
 
     /**
      * 创建Interceptors。格式：<code>, new Interceptor1(), new Interceptor2()</code>
@@ -180,20 +140,19 @@ public abstract class BaseProcessor extends AbstractProcessor {
 
     /**
      * 生成类似下面格式的HandlerInitClass，同时生成ServiceInitClass
+     *
      * <pre>
-     * package com.sankuai.waimai.router.generated;
-     * public class UriRouter_RouterUri_xxx implements IUriAnnotationInit {
-     *     public void init(UriAnnotationHandler handler) {
-     *         handler.register("", "", "/login", "com.xxx.LoginActivity", false);
-     *         // ...
-     *     }
+     * public class UriAnnotationInit_2ed60d4c2e177400d576cf6794f93d5c implements IUriAnnotationInit {
+     *   public void init(UriAnnotationHandler handler) {
+     *     handler.register("", "", "/lib2/showMySonAct", "top.ss007.demolib2.activitys.Lib2MySonAct", false);
+     *   }
      * }
      * </pre>
      *
      * @param code             方法中的代码
-     * @param genClassName     生成class的SimpleClassName，形如 UriRouter_RouterUri_xxx
-     * @param handlerClassName Handler类名，例如 com.sankuai.waimai.router.common.UriAnnotationHandler
-     * @param interfaceName    接口名，例如 com.sankuai.waimai.router.common.IUriAnnotationInit
+     * @param genClassName     生成class的SimpleClassName，形如 UriAnnotationInit_2ed60d4c2e177400d576cf6794f93d5c
+     * @param handlerClassName Handler类名，例如 top.ss007.router.uriHandlers.UriAnnotationHandler
+     * @param interfaceName    接口名，例如 top.ss007.router.common.IUriAnnotationInit
      */
     public void buildHandlerInitClass(CodeBlock code, String genClassName, String handlerClassName, String interfaceName) {
         MethodSpec methodSpec = MethodSpec.methodBuilder(SuffixConst.INIT_METHOD)
@@ -229,13 +188,10 @@ public abstract class BaseProcessor extends AbstractProcessor {
      * <pre>
      * package top.ss007.router.generated.service;
      *
-     * import top.ss007.router.generated.service.ServiceLoader;
-     *
-     * public class &lt;ClassName&gt; {
-     *     public static void init() {
-     *         ServiceLoader.put(com.xxx.interface1.class, "key1", com.xxx.implementsA.class, false);
-     *         ServiceLoader.put(com.xxx.interface2.class, "key2", com.xxx.implementsB.class, false);
-     *     }
+     * public class ServiceInit_8da90e51c794acb005ea295dcd1dbc2f {
+     *   public static void init() {
+     *      ServiceLoader.put(Lib2Service.class, "lib2/service1", Lib2ServiceImp.class, false);
+     *      }
      * }
      * </pre>
      */

@@ -15,6 +15,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
+import javax.tools.Diagnostic;
 
 import top.ss007.annotation.annotations.RouterUri;
 import top.ss007.annotation.internal.SuffixConst;
@@ -35,9 +36,8 @@ public class UriAnnotationProcessor extends BaseProcessor {
                 continue;
             }
             boolean isActivity = isActivity(element);
-            boolean isHandler = isHandler(element);
-
-            if (!isActivity && !isHandler) {
+            if (!isActivity) {
+                mMessager.printMessage(Diagnostic.Kind.WARNING,"只支持标记Activity",element);
                 continue;
             }
 
@@ -50,7 +50,7 @@ public class UriAnnotationProcessor extends BaseProcessor {
             if (hash == null) {
                 hash = hash(cls.className());
             }
-            CodeBlock handler = buildHandler(isActivity, cls);
+            CodeBlock handler = CodeBlock.builder().add("$S", cls.className()).build();
             CodeBlock interceptors = buildInterceptors(getInterceptors(uri));
 
             // scheme, host, path, handler, exported, interceptors

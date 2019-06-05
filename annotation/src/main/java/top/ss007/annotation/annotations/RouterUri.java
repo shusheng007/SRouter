@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 /**
  * 指定一个Uri跳转，此注解可以用在Activity上
  *
- * Created by jzj on 2018/3/19.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.CLASS)

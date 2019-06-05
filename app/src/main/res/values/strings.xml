@@ -1,3 +1,4 @@
 <resources>
 	<string name="app_name">SRouter</string>
+    <string name="main_open_lib1_act1">打开lib1的Activity</string>
 </resources>

@@ -9,8 +9,8 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import top.ss007.router.activity.ActivityLauncher;
+import top.ss007.router.common.DefaultAnnotationLoader;
 import top.ss007.router.common.IUriAnnotationInit;
-import top.ss007.router.common.RouterComponents;
 import top.ss007.router.core.NavCallback;
 import top.ss007.router.core.RootUriHandler;
 import top.ss007.router.core.UriInterceptor;
@@ -37,8 +37,8 @@ public class UriAnnotationHandler extends RootUriHandler {
         }
     };
 
-    protected void initAnnotationConfig() {
-        RouterComponents.loadAnnotation(this, IUriAnnotationInit.class);
+    private void initAnnotationConfig() {
+        DefaultAnnotationLoader.INSTANCE.load(this, IUriAnnotationInit.class);
     }
 
     public void lazyInit() {
@@ -73,8 +73,9 @@ public class UriAnnotationHandler extends RootUriHandler {
 
     @Override
     protected void handleInternal(@NonNull UriRequest request, NavCallback callback) {
-        ActivityLauncher.getInstance().navigation(request, callback);
+        ActivityLauncher.getInstance().navigate(request, callback);
     }
+
 
 
     @Override

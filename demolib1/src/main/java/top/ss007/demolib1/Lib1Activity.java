@@ -24,7 +24,7 @@ public class Lib1Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lib1);
-        //如果实现类存在带有参数的构造函数，可以使用实现IFactory的方式传入
+        //如果实现类存在带有参数的构造函数，可以使用IFactory的方式传入
         lib2Service = SRouter.getService(Lib2Service.class, ServiceKeys.KEY_LIB2_SERVICE, new IFactory() {
             @NonNull
             @Override
@@ -33,6 +33,8 @@ public class Lib1Activity extends AppCompatActivity {
             }
         });
         //lib2Service=SRouter.getService(Lib2Service.class, ServiceKeys.KEY_LIB2_SERVICE);
+
+
         findViewById(R.id.btn_getLib2Name).setOnClickListener(v -> {
             ((Button) v).setText(lib2Service.getLib2Name());
         });
@@ -47,7 +49,7 @@ public class Lib1Activity extends AppCompatActivity {
         });
 
         findViewById(R.id.btn_start_uri).setOnClickListener(v -> {
-            SRouter.startUri(new UriRequest.Builder(this, Uri.parse("http://ss007.top/test")).build());
+            SRouter.startUri(new UriRequest.Builder(this, Uri.parse("https://baidu.com")).build());
         });
     }
 }

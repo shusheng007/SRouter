@@ -2,7 +2,7 @@ package top.ss007.compiler;
 
 import com.sun.tools.javac.code.Symbol;
 
-import java.util.ArrayList;
+import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +29,7 @@ public class ServiceAnnotationProcessor extends BaseProcessor {
     /**
      * interfaceClass --> Entity
      */
-    private final HashMap<String, Entity> mEntityMap = new HashMap<>();
+    private final Map<String, Entity> mEntityMap = new HashMap<>();
     private String mHash = null;
 
     @Override
@@ -50,8 +50,7 @@ public class ServiceAnnotationProcessor extends BaseProcessor {
 
             Symbol.ClassSymbol cls = (Symbol.ClassSymbol) element;
             if (mHash == null) {
-                //mHash = hash(cls.className());
-                mHash = cls.getSimpleName().toString();
+                mHash = hash(cls.className());
             }
 
             RouterService service = cls.getAnnotation(RouterService.class);
@@ -71,38 +70,36 @@ public class ServiceAnnotationProcessor extends BaseProcessor {
                         continue;
                     }
                     if (!isConcreteSubType(cls, mirror)) {
-                        String msg = cls.className() + "没有实现注解" + RouterService.class.getName()
-                                + "标注的接口" + mirror.toString();
+                        String msg = cls.className() + "没有实现注解:" + RouterService.class.getName()
+                                + "标注的接口:" + mirror.toString();
                         throw new RuntimeException(msg);
                     }
                     String interfaceName = getClassName(mirror);
 
                     Entity entity = mEntityMap.get(interfaceName);
                     if (entity == null) {
-                        entity = new Entity(interfaceName);
+                        entity = new Entity();
                         mEntityMap.put(interfaceName, entity);
                     }
-                    if (keys.length > 0) {
-                        for (String key : keys) {
-                            if (key.contains(":")) {
-                                String msg = String.format("%s: 注解%s的key参数不可包含冒号",
-                                        implementationName, RouterService.class.getName());
-                                throw new RuntimeException(msg);
-                            }
-                            entity.put(key, implementationName, singleton);
+                    for (String key : keys) {
+                        if (key.contains(":")) {
+                            String msg = String.format("%s: 注解%s的key参数不可包含冒号",
+                                    implementationName, RouterService.class.getName());
+                            throw new RuntimeException(msg);
                         }
-                    } else {
-                        entity.put(null, implementationName, singleton);
+                        entity.put(key, implementationName, singleton);
                     }
                 }
             }
         }
     }
 
+    //generate the init class
     private void generateInitClass() {
         if (mEntityMap.isEmpty() || mHash == null) {
             return;
         }
+
         ServiceInitClassBuilder generator = new ServiceInitClassBuilder("ServiceInit" + SuffixConst.SPLITTER + mHash);
         for (Map.Entry<String, Entity> entry : mEntityMap.entrySet()) {
             for (ServiceImpl service : entry.getValue().getMap().values()) {
@@ -129,13 +126,7 @@ public class ServiceAnnotationProcessor extends BaseProcessor {
 
     public static class Entity {
 
-        private final String mInterfaceName;
-
         private final Map<String, ServiceImpl> mMap = new HashMap<>();
-
-        public Entity(String interfaceName) {
-            mInterfaceName = interfaceName;
-        }
 
         public Map<String, ServiceImpl> getMap() {
             return mMap;
@@ -143,23 +134,17 @@ public class ServiceAnnotationProcessor extends BaseProcessor {
 
         //将接口的实现放入holder中
         public void put(String key, String implementationName, boolean singleton) {
-            if (implementationName == null) {
-                return;
+            if (key == null || implementationName == null) {
+                throw new InvalidParameterException("the key and implementationName should not null");
+            }
+
+            ServiceImpl check = mMap.get(key);
+            if (check != null) {
+                throw new InvalidParameterException(String.format("the key:%s has been used", key));
             }
             ServiceImpl impl = new ServiceImpl(key, implementationName, singleton);
-            ServiceImpl prev = mMap.put(impl.getKey(), impl);
-            String errorMsg = ServiceImpl.checkConflict(mInterfaceName, prev, impl);
-            if (errorMsg != null) {
-                throw new RuntimeException(errorMsg);
-            }
-        }
-
-        public List<String> getContents() {
-            List<String> list = new ArrayList<>();
-            for (ServiceImpl impl : mMap.values()) {
-                list.add(impl.toConfig());
-            }
-            return list;
+            mMap.put(impl.getKey(), impl);
         }
     }
+
 }

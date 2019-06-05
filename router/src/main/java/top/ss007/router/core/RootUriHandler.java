@@ -1,10 +1,9 @@
 package top.ss007.router.core;
 
-import android.widget.Toast;
-
 import java.security.InvalidParameterException;
 
 import androidx.annotation.NonNull;
+import top.ss007.router.activity.ActivityLauncher;
 import top.ss007.router.utils.SLogger;
 
 
@@ -31,8 +30,7 @@ public abstract class RootUriHandler extends UriHandler {
 
     @Override
     protected void handleExternal(@NonNull UriRequest request, NavCallback callback) {
-        Toast.makeText(request.getContext(),"暂时不支持URI:"+request.getUri().toString(),Toast.LENGTH_LONG).show();
-        // TODO: 2019/5/29 处理其他scheme的uri
+        ActivityLauncher.getInstance().broadcastRequest(request,callback);
     }
 
 }

@@ -2,6 +2,7 @@ package top.ss007.router.services;
 
 import android.content.Context;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,14 +19,16 @@ import top.ss007.router.utils.SLogger;
 import top.ss007.router.utils.SingletonPool;
 
 /**
- * 通过接口Class获取实现类
+ * 服务处理器，可通过此类获取到服务
  *
  * @param <I> 接口类型
  */
 public class ServiceLoader<I> {
 
-    private static final String TAG="ServiceLoader";
+    private static final String TAG = "ServiceLoader";
 
+    //每一个接口对应map中的一条
+    //key: 服务接口的Class  value: serviceLoader
     private static final Map<Class, ServiceLoader> SERVICES = new HashMap<>();
 
     private final String mInterfaceName;
@@ -42,16 +45,17 @@ public class ServiceLoader<I> {
         @Override
         protected void doInit() {
             try {
-                //这个类需要操作字节码动态生成，将processor生产的初始化类整合到一个类中
+                //这个类SuffixConst.SERVICE_LOADER_INIT 是在gradle打包dex前生成的，其将所有的生成service类中的初始化代码整合到init()方法中。
                 Class.forName(SuffixConst.SERVICE_LOADER_INIT)
                         .getMethod(SuffixConst.INIT_METHOD)
                         .invoke(null);
-                SLogger.info(TAG,"[ServiceLoader] init class invoked");
+                SLogger.info(TAG, "[ServiceLoader] init class invoked");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
+
 
     public static void lazyInit() {
         sInitHelper.lazyInit();
@@ -59,11 +63,11 @@ public class ServiceLoader<I> {
 
 
     /**
-     * 很重要，生成的代码就是通过这个方法将目标类的信息保存到一个map里面的
+     * 很重要，编译生成的代码通过这个方法将目标类的信息保存到一个map里
      *
-     * @param interfaceClass 服务接口
-     * @param key            指定实现来在map中对应的key
-     * @param implementClass 服务接口的实现类
+     * @param interfaceClass 服务接口Class
+     * @param key            指定实现在map中对应的key
+     * @param implementClass 服务接口的实现类Class
      * @param singleton      是否单例
      */
     public static void put(Class interfaceClass, String key, Class implementClass, boolean singleton) {
@@ -79,8 +83,8 @@ public class ServiceLoader<I> {
     public static <T> ServiceLoader<T> load(Class<T> interfaceClass) {
         sInitHelper.ensureInit();
         if (interfaceClass == null) {
-            SLogger.error("ServiceLoader","ServiceLoader.load的class参数不应为空");
-            return EmptyServiceLoader.INSTANCE;
+            SLogger.error("ServiceLoader", "ServiceLoader.load的class参数不应为空");
+            throw new InvalidParameterException("parameter interfaceClass can not be null");
         }
         ServiceLoader service = SERVICES.get(interfaceClass);
         if (service == null) {
@@ -98,8 +102,9 @@ public class ServiceLoader<I> {
 
     /**
      * key --> class name
+     * 每个serviceLoader 里面包含一个map，里面保存了此接口的各个实现类
      */
-    private HashMap<String, ServiceImpl> mMap = new HashMap<>();
+    private Map<String, ServiceImpl> mMap = new HashMap<>();
 
     /**
      * 保存接口的实现类型
@@ -147,7 +152,6 @@ public class ServiceLoader<I> {
         return list;
     }
 
-    @SuppressWarnings("unchecked")
     @Nullable
     private <T extends I> T createInstance(@Nullable ServiceImpl impl, @Nullable IFactory factory) {
         if (impl == null) {
@@ -158,7 +162,6 @@ public class ServiceLoader<I> {
             try {
                 return SingletonPool.get(clazz, factory);
             } catch (Exception e) {
-                //Debugger.fatal(e);
                 e.printStackTrace();
             }
         } else {
@@ -167,7 +170,7 @@ public class ServiceLoader<I> {
                     factory = DefaultFactory.INSTANCE;
                 }
                 T t = factory.create(clazz);
-                SLogger.info(TAG,String.format("[ServiceLoader] create instance: %s, result = %s", clazz, t));
+                SLogger.info(TAG, String.format("[ServiceLoader] create instance: %s, result = %s", clazz, t));
                 return t;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -200,25 +203,5 @@ public class ServiceLoader<I> {
     @Override
     public String toString() {
         return "ServiceLoader (" + mInterfaceName + ")";
-    }
-
-    public static class EmptyServiceLoader extends ServiceLoader {
-
-        public static final ServiceLoader INSTANCE = new EmptyServiceLoader();
-
-        public EmptyServiceLoader() {
-            super(null);
-        }
-
-        @NonNull
-        @Override
-        public List<Class> getAllClasses() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public String toString() {
-            return "EmptyServiceLoader";
-        }
     }
 }

@@ -24,6 +24,7 @@ import top.ss007.router.uriHandlers.UriAnnotationHandler;
  */
 public class SRouter {
     private static final String TAG = "SRouter";
+
     private static final String SCHEME="srouter";
     private static final String HOST="ss007.top";
 
@@ -31,7 +32,7 @@ public class SRouter {
 
     private static RootUriHandler getRootHandler(String scheme,String host) {
         if (URI_HANDLER == null) {
-            new UriAnnotationHandler(scheme,host);
+            URI_HANDLER= new UriAnnotationHandler(scheme,host);
         }
         return URI_HANDLER;
     }

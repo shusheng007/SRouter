@@ -24,7 +24,7 @@ public class ActivityLauncher {
         private static ActivityLauncher INSTANCE = new ActivityLauncher();
     }
 
-    public void navigation(UriRequest request, @NonNull NavCallback callback) {
+    public void navigate(UriRequest request, @NonNull NavCallback callback) {
         Intent intent = createIntent(request, request.getUriResponse().getDestination());
         if (intent == null || intent.getComponent() == null) {
             if (callback != null)
@@ -32,7 +32,6 @@ public class ActivityLauncher {
             return;
         }
         intent.putExtras(request.getExtras());
-        intent.setData(request.getUri());
 
         // Set flags.
         int flags = request.getFlags();
@@ -44,7 +43,11 @@ public class ActivityLauncher {
         startActivity(request,intent,callback);
     }
 
-    public void navigateImplicit(){}
+    public void broadcastRequest(UriRequest request,@NonNull NavCallback callback){
+        Intent intent=new Intent();
+        intent.setData(request.getUri());
+        startActivity(request,intent,callback);
+    }
 
 
     /**
@@ -70,10 +73,10 @@ public class ActivityLauncher {
         if (request.getRequestCode() >0){
             if (request.getContext() instanceof Activity){
                 ActivityCompat.startActivityForResult((Activity) request.getContext(), intent, request.getRequestCode(),
-                        null);
+                        request.getOptionsCompat());
             }
         }else {
-            ActivityCompat.startActivity(request.getContext(), intent, null);
+            ActivityCompat.startActivity(request.getContext(), intent, request.getOptionsCompat());
         }
 
         if ((-1 != request.getEnterAnim() && -1 != request.getExitAnim()) && request.getContext() instanceof Activity) {

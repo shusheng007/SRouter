@@ -2,12 +2,12 @@ package top.ss007.router.core;
 
 import android.content.Context;
 import android.net.Uri;
-
 import android.os.Bundle;
 import android.os.Parcelable;
 
-
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityOptionsCompat;
 import top.ss007.router.uriHandlers.UriResponse;
 
 
@@ -20,8 +20,12 @@ public class UriRequest {
     private int requestCode=-1;
     @NonNull
     private Bundle mExtras;
+
     private int mFlags=-1;
 
+
+
+    private Bundle mOptionsCompat;    // The transition animation of activity
     private int mEnterAnim = -1;
     private int mExitAnim = -1;
 
@@ -44,6 +48,10 @@ public class UriRequest {
 
     public UriResponse getUriResponse() {
         return mUriResponse;
+    }
+
+    public Bundle getOptionsCompat() {
+        return mOptionsCompat;
     }
 
     @NonNull
@@ -129,6 +137,7 @@ public class UriRequest {
         private int flags;
         private int enterAnim;
         private int exitAnim;
+        private Bundle optionsCompat;
 
         public Builder(Context context, Uri uri) {
             this.context = context;
@@ -186,7 +195,13 @@ public class UriRequest {
             return this;
         }
 
-
+        @RequiresApi(16)
+        public Builder setOptionsCompat(ActivityOptionsCompat compat){
+            if (compat!=null){
+                this.optionsCompat = compat.toBundle();
+            }
+            return this;
+        }
 
         public UriRequest build(){
             return new UriRequest(this);

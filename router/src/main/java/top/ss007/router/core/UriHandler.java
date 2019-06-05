@@ -81,7 +81,7 @@ public abstract class UriHandler {
     protected abstract void handleInternal(@NonNull UriRequest request, NavCallback callback);
 
     /**
-     * 处理不符合合约定的scheme://host 的URI，例如http://homecredit。
+     * 处理不符合合约定的scheme://host 的URI，例如http://homecredit
      */
     protected abstract void handleExternal(@NonNull UriRequest request, NavCallback callback);
 }

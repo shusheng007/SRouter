@@ -9,18 +9,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface RouterService {
 
-    /**
-     * 实现的接口（或继承的父类）
-     */
+    //服务接口
     Class[] interfaces();
 
-    /**
-     * 同一个接口的多个实现类之间，可以通过唯一的key区分。
-     */
-    String[] key() default {};
+    //当服务接口存在多个实现类，通过此可以获取对应的实现
+     String[] key() default {};
 
-    /**
-     * 是否为单例。如果是单例，则使用ServiceLoader.getService不会重复创建实例。
-     */
+    //服务实现是否为单例
     boolean singleton() default false;
 }

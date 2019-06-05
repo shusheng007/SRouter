@@ -1,7 +1,6 @@
 package top.ss007.router.common;
 
 
-
 import java.util.List;
 
 import top.ss007.router.SRouter;
@@ -9,7 +8,6 @@ import top.ss007.router.core.UriHandler;
 
 /**
  * 使用ServiceLoader加载注解配置
- *
  */
 public class DefaultAnnotationLoader implements AnnotationLoader {
 

@@ -1,42 +1,20 @@
 package top.ss007.annotation.service;
 
+import java.security.InvalidParameterException;
+
 /**
  * Service的holder
- *
- * Created by jzj on 2018/4/19.
  */
 public class ServiceImpl {
 
-    public static final String SPLITTER = ":";
-    public static final String SINGLETON = "singleton";
-
-    public static String checkConflict(String interfaceName, ServiceImpl impl,
-            ServiceImpl previous) {
-        if (impl != null && previous != null && !stringEquals(previous.implementation,
-                impl.implementation)) {
-            return String.format("接口%s对应key='%s'存在多个实现: %s, %s",
-                    interfaceName, impl.getKey(), previous, impl);
-        }
-        return null;
-    }
-
-    @SuppressWarnings("StringEquality")
-    private static boolean stringEquals(String s1, String s2) {
-        return s1 == s2 || s1 != null && s1.equals(s2);
-    }
-
-    private static boolean isEmpty(String key) {
-        return key == null || key.length() == 0;
-    }
-
-    private final String key;
-    private final String implementation;
-    private final Class implementationClazz;
+    private final String key;//此实现类对应的key
+    private final String implementation;//实现类的全类名
+    private final Class implementationClazz; //实现类的Class对象
     private final boolean singleton;
 
     public ServiceImpl(String key, Class implementation, boolean singleton) {
         if (key == null || implementation == null) {
-            throw new RuntimeException("key和implementation不应该为空");
+            throw new InvalidParameterException("key和implementation不应该为空");
         }
         this.key = key;
         this.implementation = "";
@@ -46,7 +24,7 @@ public class ServiceImpl {
 
     public ServiceImpl(String key, String implementation, boolean singleton) {
         if (isEmpty(implementation)) {
-            throw new RuntimeException("implementation不应该为空");
+            throw new InvalidParameterException("implementation不应该为空");
         }
         this.key = isEmpty(key) ? implementation : key; // 没有指定key，则为implementation
         this.implementation = implementation;
@@ -54,17 +32,7 @@ public class ServiceImpl {
         this.singleton = singleton;
     }
 
-    public String toConfig() {
-        String s = key + SPLITTER + implementation;
-        if (singleton) {
-            s += SPLITTER + SINGLETON;
-        }
-        return s;
-    }
 
-    /**
-     * not null
-     */
     public String getKey() {
         return key;
     }
@@ -81,8 +49,17 @@ public class ServiceImpl {
         return singleton;
     }
 
+    private static boolean isEmpty(String key) {
+        return key == null || key.length() == 0;
+    }
+
     @Override
     public String toString() {
-        return implementation;
+        return "ServiceImpl{" +
+                "key='" + key + '\'' +
+                ", implementation='" + implementation + '\'' +
+                ", implementationClazz=" + implementationClazz +
+                ", singleton=" + singleton +
+                '}';
     }
 }
