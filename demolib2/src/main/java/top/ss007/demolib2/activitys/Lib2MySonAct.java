@@ -7,8 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import top.ss007.annotation.annotations.RouterUri;
 import top.ss007.businessbase.RouteTable;
 import top.ss007.demolib2.R;
+import top.ss007.demolib2.interceptors.LocatingInterceptor;
 
-@RouterUri(path = RouteTable.LIB2_ACT_MY_SON)
+@RouterUri(path = RouteTable.LIB2_ACT_MY_SON,interceptors = LocatingInterceptor.class)
 public class Lib2MySonAct extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

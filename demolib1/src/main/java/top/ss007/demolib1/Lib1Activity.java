@@ -10,12 +10,11 @@ import top.ss007.annotation.annotations.RouterUri;
 import top.ss007.businessbase.RouteTable;
 import top.ss007.businessbase.services.Lib2Service;
 import top.ss007.businessbase.services.ServiceKeys;
-import top.ss007.demolib1.interceptors.ShowToastInterceptor;
 import top.ss007.router.SRouter;
 import top.ss007.router.core.UriRequest;
 import top.ss007.router.services.IFactory;
 
-@RouterUri(path = RouteTable.LIB1_ACTIVITY1, interceptors = {ShowToastInterceptor.class})
+@RouterUri(path = RouteTable.LIB1_ACTIVITY1)
 public class Lib1Activity extends AppCompatActivity {
 
     private Lib2Service lib2Service;
