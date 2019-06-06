@@ -1,6 +1,7 @@
 package top.ss007.assembly;
 
-import com.android.build.gradle.BaseExtension;
+import com.android.build.gradle.AppExtension;
+import com.android.build.gradle.AppPlugin;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -17,7 +18,11 @@ public class SRouterPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         System.out.println("***********plugin start**********");
-        project.getExtensions().findByType(BaseExtension.class)
+        boolean isApp=project.getPlugins().hasPlugin(AppPlugin.class);
+        if (!isApp)
+            return;
+
+        project.getExtensions().findByType(AppExtension.class)
                 .registerTransform(new SRouterTransform());
     }
 }

@@ -34,9 +34,6 @@ import top.ss007.annotation.internal.SuffixConst;
 
 public class SRouterTransform extends Transform {
 
-    private static final String TRANSFORM = "Transform: ";
-    private static final String GENERATE_INIT = "GenerateInit: ";
-
     /**
      * Linux/UNIX: /
      * Windows:   top\ss007\router\generated\service
@@ -47,21 +44,25 @@ public class SRouterTransform extends Transform {
      */
     public static final String INIT_SERVICE_PATH = SuffixConst.GEN_PKG_SERVICE.replace('.', '/');
 
+    //此transform的名称
     @Override
     public String getName() {
         return SuffixConst.NAME;
     }
 
+    //处理类型，有class文件和java 源码文件
     @Override
     public Set<QualifiedContent.ContentType> getInputTypes() {
         return TransformManager.CONTENT_CLASS;
     }
 
+    //处理域，此处为整个project
     @Override
     public Set<? super QualifiedContent.Scope> getScopes() {
         return TransformManager.SCOPE_FULL_PROJECT;
     }
 
+    //是否支持增量
     @Override
     public boolean isIncremental() {
         return false;
@@ -144,6 +145,7 @@ public class SRouterTransform extends Transform {
         return s.substring(start, s.length() - SdkConstants.DOT_CLASS.length());
     }
 
+
     /**
      * 生成格式如下的代码，其中ServiceInit_xxx由注解生成器生成。
      * <pre>
@@ -166,8 +168,7 @@ public class SRouterTransform extends Transform {
 
         try {
             ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-            ClassVisitor cv = new ClassVisitor(Opcodes.ASM5, writer) {
-            };
+            ClassVisitor cv = new ClassVisitor(Opcodes.ASM5, writer) {};
             String className = SuffixConst.SERVICE_LOADER_INIT.replace('.', '/');
             cv.visit(50, Opcodes.ACC_PUBLIC, className, null, "java/lang/Object", null);
 

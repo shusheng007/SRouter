@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="用于展示模块间的路由调用\n\n1.lib1于lib2之间没有依赖关系\n2.lib1通过SRouter调用lib2的方法\n3.lib1通过SRouter打开lib2的Activity"
+        android:text="用于展示模块间的路由调用\n\n1.lib1与lib2之间没有依赖关系\n2.lib1通过SRouter调用lib2的方法\n3.lib1通过SRouter打开lib2的Activity"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
