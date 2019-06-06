@@ -1,5 +1,13 @@
 apply plugin: 'java-library'
-apply plugin: 'maven'
+//apply plugin: 'maven'
+
+ext {
+    bintrayName = 'srouter-annotation'
+    artifact = bintrayName
+    libraryName = 'SRouter annotation'
+    libraryDescription = 'The annotation used in srouter api'
+    libraryVersion = arouter_annotation_version
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -14,15 +22,18 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            //提交到远程服务器：
-            //repository(url: "http://www.xxx.com/repos") {
-            //    authentication(userName: "admin", password: "admin")
-            //}
-            //本地的Maven地址设置
-            repository(url: uri('../repos'))
-        }
-    }
-}
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            //提交到远程服务器：
+//            //repository(url: "http://www.xxx.com/repos") {
+//            //    authentication(userName: "admin", password: "admin")
+//            //}
+//            //本地的Maven地址设置
+//            repository(url: uri('../repos'))
+//        }
+//    }
+//}
+
+apply from: '../install.gradle'
+apply from: '../bintray.gradle'

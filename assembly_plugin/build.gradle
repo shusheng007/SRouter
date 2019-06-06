@@ -1,6 +1,13 @@
 apply plugin: 'groovy'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 
+ext {
+    bintrayName = 'Srouter-register'
+    artifact = bintrayName
+    libraryName = 'SRouter register gradle plugin'
+    libraryDescription = 'A gradle plugin used for srouter route map register'
+    libraryVersion = arouter_register_version
+}
 
 dependencies {
     //gradle sdk
@@ -26,18 +33,21 @@ repositories {
     mavenCentral()
 }
 
-group='top.ss007.srouter.assemblyplugin'
-version='1.0.0'
+//group='top.ss007.srouter.assemblyplugin'
+//version='1.0.0'
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            //提交到远程服务器：
-            //repository(url: "http://www.xxx.com/repos") {
-            //    authentication(userName: "admin", password: "admin")
-            //}
-            //本地的Maven地址设置为/mnt/TestRepos/
-            repository(url: uri('../repos'))
-        }
-    }
-}
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            //提交到远程服务器：
+//            //repository(url: "http://www.xxx.com/repos") {
+//            //    authentication(userName: "admin", password: "admin")
+//            //}
+//            //本地的Maven地址设置为/mnt/TestRepos/
+//            repository(url: uri('../repos'))
+//        }
+//    }
+//}
+
+apply from: '../install.gradle'
+apply from: '../bintray.gradle'

@@ -1,5 +1,13 @@
 apply plugin: 'com.android.library'
 
+ext {
+    bintrayName = 'srouter-api'
+    artifact = bintrayName
+    libraryName = 'SRouter sdk'
+    libraryDescription = 'A router for android'
+    libraryVersion = arouter_main_version
+}
+
 android {
     compileSdkVersion 28
 
@@ -39,3 +47,6 @@ dependencies {
 
     api project(path: ':annotation')
 }
+
+apply from: '../install.gradle'
+apply from: '../bintray.gradle'

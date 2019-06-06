@@ -12,6 +12,10 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.4.1'
         
         classpath 'top.ss007.srouter.assemblyplugin:assembly_plugin:1.0.0'
+
+        //打包和上传jcenter的插件
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
     }
 }
 
