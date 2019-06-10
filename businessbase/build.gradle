@@ -28,8 +28,12 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(':router')
-    annotationProcessor project(':compiler')
+
+    api 'top.shusheng007:srouter:0.1.0'
+    annotationProcessor 'top.shusheng007:srouter-compiler:0.1.0'
+
+//    api project(':router')
+//    annotationProcessor project(':compiler')
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
     testImplementation 'junit:junit:4.12'

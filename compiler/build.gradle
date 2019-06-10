@@ -1,5 +1,4 @@
 import org.gradle.internal.jvm.Jvm
-
 apply plugin: 'java-library'
 
 ext {
@@ -7,25 +6,24 @@ ext {
     artifact = bintrayName
     libraryName = 'SRouter compiler'
     libraryDescription = 'A compiler for SRouter to find route'
-    libraryVersion = arouter_main_version
+    libraryVersion = '0.1.0'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.auto.service:auto-service:1.0-rc3'
     implementation 'com.squareup:javapoet:1.11.1'
-    compileOnly files(Jvm.current().getToolsJar())
-    implementation project(':annotation')
 
+    compileOnly files(Jvm.current().getToolsJar())
+
+    //implementation project(':annotation')
+    implementation 'top.shusheng007:srouter-annotation:0.1.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-//编译JAVA文件时采用UTF-8
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-}
+
 
 apply from: '../install.gradle'
 apply from: '../bintray.gradle'

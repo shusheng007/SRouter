@@ -22,6 +22,9 @@ import top.ss007.annotation.annotations.RouterService;
 import top.ss007.annotation.internal.SuffixConst;
 import top.ss007.annotation.service.ServiceImpl;
 
+/**
+ * ServiceLoader 注解处理器
+ */
 //@AutoService(Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ServiceAnnotationProcessor extends BaseProcessor {
