@@ -3,11 +3,13 @@ package top.ss007.demolib1;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import top.ss007.annotation.annotations.RouterUri;
 import top.ss007.businessbase.RouteTable;
+import top.ss007.businessbase.services.IRequestCallback;
 import top.ss007.businessbase.services.Lib2Service;
 import top.ss007.businessbase.services.ServiceKeys;
 import top.ss007.router.SRouter;
@@ -36,19 +38,27 @@ public class Lib1Activity extends AppCompatActivity {
 
         findViewById(R.id.btn_getLib2Name).setOnClickListener(v -> {
             ((Button) v).setText(lib2Service.getLib2Name());
+
+            lib2Service.asyncGetInfo(1, new IRequestCallback() {
+                @Override
+                public void onSuccess(String resultJson) {
+                    Toast.makeText(Lib1Activity.this,String.format("返回结果：%s",resultJson),Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailed(String code, String msg) {
+
+                }
+            });
         });
 
 
-        findViewById(R.id.btn_check_boy).setOnClickListener(v -> {
-            SRouter.startNavNoResult(new UriRequest.Builder(this, Uri.parse(RouteTable.SCHEME_HOST + RouteTable.LIB2_ACT_MY_SON))
-                    .setString("name", "my name is cc")
-                    .setEnterAnim(R.anim.slide_in_bottom)
-                    .setExitAnim(R.anim.slide_out_bottom)
-                    .build());
-        });
+        findViewById(R.id.btn_check_boy).setOnClickListener(v -> SRouter.startNavNoResult(new UriRequest.Builder(this, Uri.parse(RouteTable.SCHEME_HOST + RouteTable.LIB2_ACT_MY_SON))
+                .setString("name", "my name is cc")
+                .setEnterAnim(R.anim.slide_in_bottom)
+                .setExitAnim(R.anim.slide_out_bottom)
+                .build()));
 
-        findViewById(R.id.btn_start_uri).setOnClickListener(v -> {
-            SRouter.startUri(new UriRequest.Builder(this, Uri.parse("https://baidu.com")).build());
-        });
+        findViewById(R.id.btn_start_uri).setOnClickListener(v -> SRouter.startUri(new UriRequest.Builder(this, Uri.parse("https://baidu.com")).build()));
     }
 }
