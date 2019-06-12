@@ -43,8 +43,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     compileOnly 'androidx.annotation:annotation:1.0.0'
 
-//    api project(path: ':annotation')
-    api 'top.shusheng007:srouter-annotation:0.1.0'
+    api project(path: ':annotation')
+//    api 'top.shusheng007:srouter-annotation:0.1.0'
 }
 
 apply from: '../install.gradle'

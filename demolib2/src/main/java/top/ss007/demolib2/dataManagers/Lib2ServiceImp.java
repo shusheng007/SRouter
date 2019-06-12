@@ -35,7 +35,7 @@ public class Lib2ServiceImp implements Lib2Service {
     }
 
     @Override
-    public String getLib2Name() {
+    public String syncGetLib2Name() {
         return String.format("I come from lib2 : %s",address);
     }
 

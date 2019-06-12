@@ -21,7 +21,7 @@ public abstract class UriHandler {
     }
 
 
-    public void getInterceptors(UriInterceptor... interceptors) {
+    protected void setInterceptors(UriInterceptor... interceptors) {
         if (mInterceptor == null) {
             mInterceptor = new InterceptorHandler();
         }
@@ -40,7 +40,10 @@ public abstract class UriHandler {
      * @param request Uri请求
      */
     public void handleUri(@NonNull final UriRequest request, NavCallback callback) {
-        if (mDefaultScheme.equals(request.getUri().getScheme()) && mDefaultHost.equals(request.getUri().getHost())) {
+        if (mDefaultScheme != null &&
+                mDefaultHost != null &&
+                mDefaultScheme.equals(request.getUri().getScheme()) &&
+                mDefaultHost.equals(request.getUri().getHost())) {
             buildUriRequest(request);
             if (mInterceptor != null) {
                 mInterceptor.handleIntercept(request, new InterceptorCallback() {
@@ -63,11 +66,6 @@ public abstract class UriHandler {
         }
     }
 
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName();
-    }
-
     /**
      * 在执行跳转前，配置uriRequest
      *
@@ -76,12 +74,12 @@ public abstract class UriHandler {
     protected abstract void buildUriRequest(@NonNull UriRequest request);
 
     /**
-     * 处理符合约定的scheme://host 的URI。在 {@link UriInterceptor} 之后调用。
+     * 处理注册了的URI,例如注册的URI格式为 srouter://host ，那么所有符合此格式的URI都在此处处理。在 {@link UriInterceptor} 之后调用。
      */
     protected abstract void handleInternal(@NonNull UriRequest request, NavCallback callback);
 
     /**
-     * 处理不符合合约定的scheme://host 的URI，例如http://homecredit
+     * 处理没有注册的URI, 例如http://homeCredit 没有注册，那么就会在此处处理. 在 {@link UriInterceptor} 之后调用。
      */
     protected abstract void handleExternal(@NonNull UriRequest request, NavCallback callback);
 }

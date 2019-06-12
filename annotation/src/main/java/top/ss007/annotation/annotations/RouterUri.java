@@ -16,7 +16,7 @@ public @interface RouterUri {
     /**
      * path
      */
-    String[] path();
+    String  path() default "";
 
     /**
      * scheme
@@ -27,11 +27,6 @@ public @interface RouterUri {
      * host
      */
     String host() default "";
-
-    /**
-     * 是否允许外部跳转
-     */
-    boolean exported() default false;
 
     /**
      * 拦截器

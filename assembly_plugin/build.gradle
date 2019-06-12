@@ -1,5 +1,6 @@
 apply plugin: 'groovy'
-//apply plugin: 'maven'
+
+apply plugin: 'maven'
 
 ext {
     bintrayName = 'srouter-register'
@@ -17,8 +18,8 @@ dependencies {
 
     implementation 'com.android.tools.build:gradle:3.4.1'
 
-    //implementation project(':annotation')
-    implementation 'top.shusheng007:srouter-annotation:0.1.0'
+    implementation project(':annotation')
+//    implementation 'top.shusheng007:srouter-annotation:0.1.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -35,16 +36,16 @@ repositories {
 }
 
 /*******调试源码时候，可以使用本地maven库**************/
-//group='top.ss007.srouter.assemblyplugin'
-//version='1.0.0'
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            //本地的Maven地址设置为/mnt/TestRepos/
-//            repository(url: uri('../repos'))
-//        }
-//    }
-//}
+group='top.ss007.srouter.assemblyplugin'
+version='1.0.0'
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //本地的Maven地址设置为/mnt/TestRepos/
+            repository(url: uri('../repos'))
+        }
+    }
+}
 
-apply from: '../install.gradle'
-apply from: '../bintray.gradle'
+//apply from: '../install.gradle'
+//apply from: '../bintray.gradle'

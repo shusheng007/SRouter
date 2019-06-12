@@ -98,9 +98,13 @@ public abstract class BaseProcessor extends AbstractProcessor {
         return isConcreteSubType(element, SuffixConst.ACTIVITY_CLASS);
     }
 
-    public boolean isHandler(Element element) {
-        return isConcreteSubType(element, SuffixConst.URI_HANDLER_CLASS);
+    public boolean isFragment(Element element){
+        return isConcreteSubType(element,SuffixConst.FRAGMENT_ANDROIDX_CLASS)||
+                isConcreteSubType(element,SuffixConst.FRAGMENT_CLASS)||
+                isConcreteSubType(element,SuffixConst.FRAGMENT_V4_CLASS);
     }
+
+
 
     public boolean isInterceptor(Element element) {
         return isConcreteSubType(element, SuffixConst.URI_INTERCEPTOR_CLASS);

@@ -50,4 +50,5 @@ public class SuffixConst {
     public static final String ACTIVITY_CLASS = "android.app.Activity";
     public static final String FRAGMENT_CLASS = "android.app.Fragment";
     public static final String FRAGMENT_V4_CLASS = "android.support.v4.app.Fragment";
+    public static final String FRAGMENT_ANDROIDX_CLASS = "androidx.fragment.app.Fragment";
 }

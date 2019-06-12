@@ -18,29 +18,22 @@ public class UriResponse {
     private String scheme;
     private String host;
     private String path;
-    private Object destination;
-    private boolean isExport;
+    private Class destination;
     private UriInterceptor[] mUriInterceptors;
 
-    public UriResponse(String scheme, String host, String path, Object destination, boolean isExport, UriInterceptor[] uriInterceptors) {
+    public UriResponse(String scheme, String host, String path, Class destination, UriInterceptor[] uriInterceptors) {
         this.scheme = scheme;
         this.host = host;
         this.path = path;
         this.destination = destination;
-        this.isExport = isExport;
         mUriInterceptors = uriInterceptors;
-    }
-
-    public static UriResponse fromUriRequest(UriRequest request){
-        Uri uri=request.getUri();
-       return new UriResponse(uri.getScheme(),uri.getHost(),uri.getPath(),null,false,null);
     }
 
     public Uri getUri(){
        return Uri.parse(scheme+"://"+host+RouterUtils.insertSlashIfAbsent(path));
     }
 
-    public Object getDestination() {
+    public Class getDestination() {
         return destination;
     }
 
@@ -56,9 +49,6 @@ public class UriResponse {
         return path;
     }
 
-    public boolean isExport() {
-        return isExport;
-    }
 
     public UriInterceptor[] getUriInterceptors() {
         return mUriInterceptors;

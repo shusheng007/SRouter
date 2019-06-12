@@ -8,7 +8,7 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import top.ss007.router.activity.ActivityLauncher;
+import top.ss007.router.activity.DefaultPageLauncher;
 import top.ss007.router.common.DefaultAnnotationLoader;
 import top.ss007.router.common.IUriAnnotationInit;
 import top.ss007.router.core.NavCallback;
@@ -25,17 +25,16 @@ public class UriAnnotationHandler extends RootUriHandler {
 
     //包含了跳转目的地信息  key：scheme://host/path; value ：UriResponse
     private final Map<String, UriResponse> mMap = new HashMap<>();
-
-    public UriAnnotationHandler(@Nullable String defaultScheme, @Nullable String defaultHost) {
-        super(RouterUtils.toNonNullString(defaultScheme), RouterUtils.toNonNullString(defaultHost));
-    }
-
     private final LazyInitHelper mInitHelper = new LazyInitHelper("UriAnnotationHandler") {
         @Override
         protected void doInit() {
             initAnnotationConfig();
         }
     };
+
+    public UriAnnotationHandler(@Nullable String defaultScheme, @Nullable String defaultHost) {
+        super(RouterUtils.toNonNullString(defaultScheme), RouterUtils.toNonNullString(defaultHost));
+    }
 
     private void initAnnotationConfig() {
         DefaultAnnotationLoader.INSTANCE.load(this, IUriAnnotationInit.class);
@@ -52,11 +51,10 @@ public class UriAnnotationHandler extends RootUriHandler {
      * @param host
      * @param path
      * @param handler
-     * @param exported
      * @param interceptors
      */
     public void register(String scheme, String host, String path,
-                         Object handler, boolean exported, UriInterceptor... interceptors) {
+                         Class handler, UriInterceptor... interceptors) {
         if (TextUtils.isEmpty(scheme)) {
             scheme = mDefaultScheme;
         }
@@ -66,16 +64,18 @@ public class UriAnnotationHandler extends RootUriHandler {
         String schemeHost = RouterUtils.schemeHostPath(scheme, host, path);
         UriResponse uriResponse = mMap.get(schemeHost);
         if (uriResponse == null) {
-            uriResponse = new UriResponse(scheme, host, path, handler, exported, interceptors);
+            uriResponse = new UriResponse(scheme, host, path, handler, interceptors);
             mMap.put(schemeHost, uriResponse);
         }
     }
 
     @Override
     protected void handleInternal(@NonNull UriRequest request, NavCallback callback) {
-        ActivityLauncher.getInstance().navigate(request, callback);
+        if (mIPageLauncher==null) {
+            mIPageLauncher=new DefaultPageLauncher();
+        }
+        mIPageLauncher.legalUriNav(request,callback);
     }
-
 
 
     @Override
@@ -83,9 +83,9 @@ public class UriAnnotationHandler extends RootUriHandler {
         mInitHelper.ensureInit();
         UriResponse uriResponse = mMap.get(RouterUtils.schemeHostPath(request.getUri()));
         if (uriResponse == null)
-            throw new UnsupportedOperationException("此路径没有注册");
+            throw new UnsupportedOperationException(String.format("Uri:%s 没有注册",RouterUtils.schemeHostPath(request.getUri())));
         request.setUriResponse(uriResponse);
-        getInterceptors(uriResponse.getUriInterceptors());
+        setInterceptors(uriResponse.getUriInterceptors());
     }
 
     @Override

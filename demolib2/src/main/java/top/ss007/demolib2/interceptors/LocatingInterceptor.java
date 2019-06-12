@@ -23,7 +23,7 @@ public class LocatingInterceptor implements UriInterceptor {
 
     @Override
     public void intercept(@NonNull UriRequest request, @NonNull InterceptorCallback callback) {
-        Toast.makeText(request.getContext(),"拦截器拦截后开始定位",Toast.LENGTH_SHORT).show();
+        Toast.makeText(request.getContext(),"拦截器拦截后开始定位...",Toast.LENGTH_SHORT).show();
         Executors.newSingleThreadExecutor().execute(()->{
             try {
                 Thread.sleep(3_000);

@@ -11,7 +11,7 @@ package top.ss007.businessbase.services;
  * @description
  */
 public interface Lib2Service {
-    String getLib2Name();
+    String syncGetLib2Name();
 
     void asyncGetInfo(int id, IRequestCallback callback);
 }

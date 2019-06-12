@@ -1,5 +1,6 @@
 apply plugin: 'java-library'
-//apply plugin: 'maven'
+
+apply plugin: 'maven'
 
 ext {
     bintrayName = 'srouter-annotation'
@@ -21,16 +22,16 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
-apply from: '../install.gradle'
-apply from: '../bintray.gradle'
+//apply from: '../install.gradle'
+//apply from: '../bintray.gradle'
 
 
 /*******调试源码时候，可以使用本地maven库**************/
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            //本地的Maven地址设置
-//            repository(url: uri('../repos'))
-//        }
-//    }
-//}
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //本地的Maven地址设置
+            repository(url: uri('../repos'))
+        }
+    }
+}

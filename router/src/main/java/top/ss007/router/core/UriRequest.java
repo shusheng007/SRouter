@@ -14,40 +14,36 @@ import top.ss007.router.uriHandlers.UriResponse;
 public class UriRequest {
 
     @NonNull
-    private  Context mContext;
+    private Context mContext;
     @NonNull
     private Uri mUri;
-    private int requestCode=-1;
+    private int requestCode = -1;
     @NonNull
     private Bundle mExtras;
 
-    private int mFlags=-1;
-
-
-
+    private int mFlags = -1;
     private Bundle mOptionsCompat;    // The transition animation of activity
     private int mEnterAnim = -1;
     private int mExitAnim = -1;
 
     private UriResponse mUriResponse;
 
-    private UriRequest(Builder builder){
-        this.mContext=builder.context;
-        this.mUri=builder.uri;
-        this.requestCode=builder.requestCode;
-        this.mExtras =builder.data;
-        this.mFlags=builder.flags;
-        this.mEnterAnim=builder.enterAnim;
-        this.mExitAnim=builder.exitAnim;
-    }
-
-
-    public void setUriResponse(UriResponse uriResponse) {
-        mUriResponse = uriResponse;
+    private UriRequest(Builder builder) {
+        this.mContext = builder.context;
+        this.mUri = builder.uri;
+        this.requestCode = builder.requestCode;
+        this.mExtras = builder.data;
+        this.mFlags = builder.flags;
+        this.mEnterAnim = builder.enterAnim;
+        this.mExitAnim = builder.exitAnim;
     }
 
     public UriResponse getUriResponse() {
         return mUriResponse;
+    }
+
+    public void setUriResponse(UriResponse uriResponse) {
+        mUriResponse = uriResponse;
     }
 
     public Bundle getOptionsCompat() {
@@ -97,11 +93,11 @@ public class UriRequest {
         return mExitAnim;
     }
 
-    public int getRequestCode(){
+    public int getRequestCode() {
         return this.requestCode;
     }
 
-    private  <T> T getField(@NonNull Class<T> clazz, @NonNull String key, T defaultValue) {
+    private <T> T getField(@NonNull Class<T> clazz, @NonNull String key, T defaultValue) {
         Object field = mExtras.get(key);
         if (field != null) {
             try {
@@ -142,7 +138,7 @@ public class UriRequest {
         public Builder(Context context, Uri uri) {
             this.context = context;
             this.uri = uri;
-            data =new Bundle();
+            data = new Bundle();
         }
 
         public Builder setRequestData(Bundle dataMap) {
@@ -150,60 +146,60 @@ public class UriRequest {
             return this;
         }
 
-        public Builder setInt(String key,int intData){
-            data.putInt(key,intData);
+        public Builder setInt(String key, int intData) {
+            data.putInt(key, intData);
             return this;
         }
 
-        public Builder setLong(String key,long longData){
-            data.putLong(key,longData);
+        public Builder setLong(String key, long longData) {
+            data.putLong(key, longData);
             return this;
         }
 
-        public Builder setString(String key,String strData){
-            data.putString(key,strData);
+        public Builder setString(String key, String strData) {
+            data.putString(key, strData);
             return this;
         }
 
-        public Builder setBoolean(String key,boolean boolData){
-            data.putBoolean(key,boolData);
+        public Builder setBoolean(String key, boolean boolData) {
+            data.putBoolean(key, boolData);
             return this;
         }
 
-        public Builder setParcelable(String key, Parcelable parcelableData){
-            data.putParcelable(key,parcelableData);
+        public Builder setParcelable(String key, Parcelable parcelableData) {
+            data.putParcelable(key, parcelableData);
             return this;
         }
 
-        public Builder setRequestCode(int requestCode){
-            this.requestCode=requestCode;
+        public Builder setRequestCode(int requestCode) {
+            this.requestCode = requestCode;
             return this;
         }
 
-        public Builder setFlags(int flag){
-            this.flags=flag;
+        public Builder setFlags(int flag) {
+            this.flags = flag;
             return this;
         }
 
-        public Builder setEnterAnim(int enterAnim){
-            this.enterAnim=enterAnim;
+        public Builder setEnterAnim(int enterAnim) {
+            this.enterAnim = enterAnim;
             return this;
         }
 
-        public Builder setExitAnim(int exitAnim){
-            this.exitAnim=exitAnim;
+        public Builder setExitAnim(int exitAnim) {
+            this.exitAnim = exitAnim;
             return this;
         }
 
         @RequiresApi(16)
-        public Builder setOptionsCompat(ActivityOptionsCompat compat){
-            if (compat!=null){
+        public Builder setOptionsCompat(ActivityOptionsCompat compat) {
+            if (compat != null) {
                 this.optionsCompat = compat.toBundle();
             }
             return this;
         }
 
-        public UriRequest build(){
+        public UriRequest build() {
             return new UriRequest(this);
         }
     }

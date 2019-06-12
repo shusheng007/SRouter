@@ -24,6 +24,15 @@ import top.ss007.annotation.internal.SuffixConst;
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class UriAnnotationProcessor extends BaseProcessor {
 
+    private static List<? extends TypeMirror> getInterceptors(RouterUri routerUri) {
+        try {
+            routerUri.interceptors();
+        } catch (MirroredTypesException mte) {
+            return mte.getTypeMirrors();
+        }
+        return null;
+    }
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment env) {
         if (annotations == null || annotations.isEmpty()) {
@@ -36,8 +45,9 @@ public class UriAnnotationProcessor extends BaseProcessor {
                 continue;
             }
             boolean isActivity = isActivity(element);
-            if (!isActivity) {
-                mMessager.printMessage(Diagnostic.Kind.WARNING,"只支持标记Activity",element);
+            boolean isFragment = isFragment(element);
+            if (!isActivity && !isFragment) {
+                mMessager.printMessage(Diagnostic.Kind.WARNING, "只支持标记Activity和Fragment", element);
                 continue;
             }
 
@@ -50,20 +60,17 @@ public class UriAnnotationProcessor extends BaseProcessor {
             if (hash == null) {
                 hash = hash(cls.className());
             }
-            CodeBlock handler = CodeBlock.builder().add("$S", cls.className()).build();
+            CodeBlock destClassName = CodeBlock.builder().add("$T.class", className(cls.className())).build();
             CodeBlock interceptors = buildInterceptors(getInterceptors(uri));
 
-            // scheme, host, path, handler, exported, interceptors
-            String[] pathList = uri.path();
-            for (String path : pathList) {
-                builder.addStatement("handler.register($S, $S, $S, $L, $L$L)",
-                        uri.scheme(),
-                        uri.host(),
-                        path,
-                        handler,
-                        uri.exported(),
-                        interceptors);
-            }
+            // scheme, host, path, handler, interceptors
+            builder.addStatement("handler.register($S, $S, $S, $L$L)",
+                    uri.scheme(),
+                    uri.host(),
+                    uri.path(),
+                    destClassName,
+                    interceptors);
+
         }
         if (hash == null) {
             hash = randomHash();
@@ -71,16 +78,6 @@ public class UriAnnotationProcessor extends BaseProcessor {
         buildHandlerInitClass(builder.build(), "UriAnnotationInit" + SuffixConst.SPLITTER + hash,
                 SuffixConst.URI_ANNOTATION_HANDLER_CLASS, SuffixConst.URI_ANNOTATION_INIT_CLASS);
         return true;
-    }
-
-
-    private static List<? extends TypeMirror> getInterceptors(RouterUri routerUri) {
-        try {
-            routerUri.interceptors();
-        } catch (MirroredTypesException mte) {
-            return mte.getTypeMirrors();
-        }
-        return null;
     }
 
     @Override
