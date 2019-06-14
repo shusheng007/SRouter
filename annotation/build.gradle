@@ -1,13 +1,13 @@
 apply plugin: 'java-library'
 
-apply plugin: 'maven'
+//apply plugin: 'maven'
 
 ext {
     bintrayName = 'srouter-annotation'
     artifact = bintrayName
     libraryName = 'SRouter annotation'
     libraryDescription = 'The annotation used in srouter api'
-    libraryVersion = '0.1.0'
+    libraryVersion = arouter_annotation_version
 }
 
 dependencies {
@@ -22,11 +22,12 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
-//apply from: '../install.gradle'
-//apply from: '../bintray.gradle'
+apply from: '../install.gradle'
+apply from: '../bintray.gradle'
 
 
 /*******调试源码时候，可以使用本地maven库**************/
+/*
 uploadArchives {
     repositories {
         mavenDeployer {
@@ -34,4 +35,4 @@ uploadArchives {
             repository(url: uri('../repos'))
         }
     }
-}
+}*/

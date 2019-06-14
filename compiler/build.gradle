@@ -6,7 +6,7 @@ ext {
     artifact = bintrayName
     libraryName = 'SRouter compiler'
     libraryDescription = 'A compiler for SRouter to find route'
-    libraryVersion = '0.1.0'
+    libraryVersion = arouter_compiler_version
 }
 
 dependencies {
@@ -16,8 +16,8 @@ dependencies {
 
     compileOnly files(Jvm.current().getToolsJar())
 
-    implementation project(':annotation')
-//    implementation 'top.shusheng007:srouter-annotation:0.1.0'
+//    implementation project(':annotation')
+    implementation 'top.shusheng007:srouter-annotation:0.2.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8

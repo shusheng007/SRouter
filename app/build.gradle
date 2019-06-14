@@ -39,7 +39,7 @@ dependencies {
 //    implementation project(':router')
 //    annotationProcessor project(':compiler')
 
-    annotationProcessor 'top.shusheng007:srouter-compiler:0.1.0'
+    annotationProcessor 'top.shusheng007:srouter-compiler:0.2.0'
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

@@ -4,15 +4,16 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven {
-            url uri('./repos');
-        }
+//        maven {
+////            url uri('./repos');
+//            url uri('https://dl.bintray.com/shusheng007/top.shusheng007');//由于包暂时没有关联到jCenter，所以需要制定地址，以后可以删除
+//        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.1'
         
-        classpath 'top.ss007.srouter.assemblyplugin:assembly_plugin:1.0.0'
-//        classpath  'top.shusheng007:srouter-register:0.1.0'
+//        classpath 'top.ss007.srouter.assemblyplugin:assembly_plugin:1.0.0'
+        classpath  'top.shusheng007:srouter-register:0.1.0'
 
         //打包和上传jCenter的插件
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
@@ -24,9 +25,10 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven {
-           url uri('./repos')
-        }
+//        maven {
+////            url uri('./repos')
+//            url uri('https://dl.bintray.com/shusheng007/top.shusheng007');
+//        }
     }
 }
 
